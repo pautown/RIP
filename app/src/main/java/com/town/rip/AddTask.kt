@@ -40,47 +40,13 @@ class AddTask : AppCompatActivity() {
         progressBar2.progress = 1
         //TaskDatabase(activity!!).getTaskDao().addTask()
 
-        seekBar?.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(
-                seek: SeekBar,
-                progress: Int, fromUser: Boolean
-            ) {
-                textView5DaysPerWeek.text = seekBar.progress.toString()
-            }
-            override fun onStartTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is started
-            }
 
-            override fun onStopTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is stopped
-
-            }
-        })
     }
 
 
     fun iterateForward(view: View){
         if(taskStage == 4){
-            var taskType = "t"
-            if(radioGroup.checkedRadioButtonId == 1) taskType = "r"
-            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-            builder.setMessage("Add this activity will return you to the main menu.")
-                .setTitle("Add Activity?")
-                .setPositiveButton("Confirm",
-                    DialogInterface.OnClickListener { dialog, id ->
-                        var task = Task(editText1.text.toString(),editText2.text.toString(),taskType, editText3.text.toString(), editText4_min.text.toString().toInt(), editText4_max.text.toString().toInt(), textView5DaysPerWeek.text.toString().toInt())
 
-                        grabTasks(task)
-                        // finish()
-                    })
-                .setNegativeButton("No",
-                    DialogInterface.OnClickListener { dialog, id ->
-                        // CANCEL
-                    })
-
-            val alert = builder.create()
-            alert.show()
 
         }else{
             taskStage++
@@ -155,16 +121,7 @@ class AddTask : AppCompatActivity() {
         textViewInstructions.text = instructionsString
     }
 
-    fun toggleMeasurementEditOn(view: View){
-        editText3.isEnabled = true
-        editText3.setText("")
-        editText3.hint = "pages, essays, eggs, etc."
-    }
-    fun toggleMeasurementEditOff(view: View){
-        editText3.isEnabled = false
-        editText3.hint = "minutes"
-        editText3.setText("minutes")
-    }
+
 
 
 

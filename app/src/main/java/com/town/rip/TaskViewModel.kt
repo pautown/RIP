@@ -20,6 +20,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
         repository = TaskRepository(tasksDao)
         allTasks = repository.allTasks
+
     }
 
     /**

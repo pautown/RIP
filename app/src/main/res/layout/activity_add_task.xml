@@ -44,20 +44,17 @@
 
     <LinearLayout
         android:id="@+id/linearLayout1"
-        android:layout_width="297dp"
-        android:layout_height="227dp"
-        android:gravity="bottom|center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.501"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="126dp"
         tools:visibility="visible">
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/textInput"
             android:layout_width="258dp"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -68,7 +65,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/textLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/activity_screen_activity_name"
@@ -338,7 +335,6 @@
                 android:orientation="vertical">
 
                 <SeekBar
-                    android:id="@+id/seekBar"
                     android:layout_width="match_parent"
                     android:layout_height="41dp"
                     android:max="7" />

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ScrollingViewTasks">
+    tools:context=".ScrollingViewTask">
 
     <TextView
         android:id="@+id/textView5"
@@ -36,7 +36,9 @@
         android:id="@+id/scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginBottom="16dp"
         android:clipToPadding="false"
         android:fillViewport="true"
@@ -57,6 +59,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            tools:layout_editor_absoluteX="17dp" />
+            tools:layout_editor_absoluteX="17dp" >
+
+            <TextView
+                android:id="@+id/textViewViewTextsLoadingMessage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|center_horizontal"
+                android:text="Loading Activities..." />
+        </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/button7sadasdasd"
+        android:layout_width="81dp"
+        android:layout_height="43dp"
+        android:text="Button"
+        tools:layout_editor_absoluteX="23dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
