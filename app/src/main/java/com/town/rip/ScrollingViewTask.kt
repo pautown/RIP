@@ -63,7 +63,12 @@ class ScrollingViewTask : AppCompatActivity() {
         view.textViewDynamicTaskDescription.text = task.description
         view.textViewDynamicTaskMagnitude.text = task.minimum.toString() + " to " + task.maximum.toString() + " " + task.unit_of_measurement + " per activity"
         view.textViewDynamicTaskFrequency.text = task.freq.toString() + " days a week"
+        view.checkBoxDynamicTaskEnabled.isChecked = task.enabled
 
+        view.checkBoxDynamicTaskEnabled.setOnClickListener{
+            task.enabled = view.checkBoxDynamicTaskEnabled.isChecked
+            taskViewModel.update(task)
+        }
         view.buttonInfo.setOnClickListener {
             viewTask(view)
         }

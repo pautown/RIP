@@ -1,10 +1,8 @@
 package com.town.rip
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+
 
 @Dao
 interface TaskDao {
@@ -23,4 +21,11 @@ interface TaskDao {
 
     @Query("DELETE FROM task_table")
     suspend fun deleteAll()
+
+    @Delete
+    suspend fun delete(task: Task)
+
+    @Update
+    suspend fun update(task: Task)
+
 }
