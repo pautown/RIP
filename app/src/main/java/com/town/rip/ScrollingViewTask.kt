@@ -13,6 +13,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
 import kotlinx.android.synthetic.main.dynamic_linear_layout_task.view.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class ScrollingViewTask : AppCompatActivity() {
@@ -36,21 +38,9 @@ class ScrollingViewTask : AppCompatActivity() {
             loadTasks()
         })
 
-
-
-       // Log.d("LISTSIZEVM", taskViewModel2.allTasks.value?.toString())
-       // loadTasks()
-       button7sadasdasd.setOnClickListener{insertTask()}
-
-
     }
 
-    private fun insertTask() {
-        var task = Task("aaaaaaaaaa","asdddddddd", "t", "minutes", 5, 10,6)
-        taskViewModel.insert(task)
-        addTask(task)
 
-    }
 
 
     private fun loadTasks() {
@@ -71,7 +61,9 @@ class ScrollingViewTask : AppCompatActivity() {
         container.addView(view)
         view.textViewDynamicTaskName.text = task.name
         view.textViewDynamicTaskDescription.text = task.description
-        view.textViewDynamicTaskFrequency.text = task.description
+        view.textViewDynamicTaskMagnitude.text = task.minimum.toString() + " to " + task.maximum.toString() + " " + task.unit_of_measurement + " per activity"
+        view.textViewDynamicTaskFrequency.text = task.freq.toString() + " days a week"
+
         view.buttonInfo.setOnClickListener {
             viewTask(view)
         }

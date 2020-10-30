@@ -4,14 +4,19 @@ package com.town.rip
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.SeekBar
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_edit.*
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.*
 
 
 class EditActivity : AppCompatActivity() {
@@ -33,9 +38,6 @@ class EditActivity : AppCompatActivity() {
                 progress: Int, fromUser: Boolean
             ) {
                 textViewDaysPerWeek.text = seekBar.progress.toString()
-                var listE = taskViewModel.allTasks.value?.get(1)
-                Log.d("LISTSIZEVM",  listE!!.name.toString() + " " + listE!!.description.toString() )
-                Log.d("LISTSIZEVM", taskViewModel.allTasks.value?.toString())
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
@@ -62,6 +64,7 @@ class EditActivity : AppCompatActivity() {
         textInputUnitOfMeasurement.setText("minutes")
     }
     
+
     fun createTask(view: View) {
         var taskType = "t"
         if (radioGroup.checkedRadioButtonId == 1) taskType = "r"
@@ -77,7 +80,14 @@ class EditActivity : AppCompatActivity() {
                         textInputUnitOfMeasurement.text.toString(),
                         textInputMinUnit.text.toString().toInt(),
                         textInputMaxUnit.text.toString().toInt(),
-                        textViewDaysPerWeek.text.toString().toInt()
+                        textViewDaysPerWeek.text.toString().toInt(),
+                        true ,
+                        0,
+                        0,
+                        0,
+                        0,
+                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
                     )
 
                     putTask(task)

@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(Task::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(Task::class), version = 2, exportSchema = false)
 abstract class TaskRoomDatabase : RoomDatabase() {
 
     abstract fun taskDao(): TaskDao
@@ -52,6 +52,7 @@ abstract class TaskRoomDatabase : RoomDatabase() {
                     TaskRoomDatabase::class.java,
                     "task_database"
                 ).addCallback(TaskDatabaseCallback(scope))
+                    .fallbackToDestructiveMigration()
                  .build()
                 INSTANCE = instance
                 return instance
