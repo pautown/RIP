@@ -21,7 +21,7 @@ class ScrollingViewTask : AppCompatActivity() {
     private var tasksList: List<Task> = listOf()
     private lateinit var taskViewsList: List<View>
 
-    var background_tint : Boolean = false;
+    var backgroundTint : Boolean = false;
 
 
 
@@ -34,16 +34,6 @@ class ScrollingViewTask : AppCompatActivity() {
         })
 
     }
-
-    override fun onResume() {
-        super.onResume()
-        if(!tasksList.isNullOrEmpty()) {
-
-        }
-    }
-
-
-
 
     private fun loadTasks() {
         Log.d("LISTSIZEVM", taskViewModel.allTasks.value?.toString())
@@ -90,8 +80,8 @@ class ScrollingViewTask : AppCompatActivity() {
         container.addView(view)
 
 
-        if (background_tint) view.dynamic_linear_layout_base_task.setBackgroundColor(Color.parseColor("#EEEEEE"))
-        background_tint = !background_tint
+        if (backgroundTint) view.dynamic_linear_layout_base_task.setBackgroundColor(Color.parseColor("#EEEEEE"))
+        backgroundTint = !backgroundTint
 
     }
 
