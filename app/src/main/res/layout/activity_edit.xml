@@ -16,11 +16,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/textViewEditActivityHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Add/Edit Activity"
+            android:text="@string/add_activity_header"
             android:textAlignment="center"
             android:textSize="36sp"
             android:textStyle="bold"
@@ -29,10 +29,10 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/textViewEditActivitySubeader"
             android:layout_width="match_parent"
             android:layout_height="16dp"
-            android:text="12 Total Tasks, 5 Enabled"
+            android:text="Create New Activity"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textSize="12sp"
@@ -52,7 +52,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4">
+            app:layout_constraintTop_toBottomOf="@+id/textViewScrrollingViewTasksSubheading">
 
 
             <LinearLayout
@@ -322,13 +322,13 @@
                         android:text="Cancel" />
 
                     <Button
-                        android:id="@+id/button3"
+                        android:id="@+id/buttonActivityEditFinish"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:onClick="createTask"
-                        android:text="Save Activity" />
+                        android:text="Finish" />
                 </LinearLayout>
 
             </LinearLayout>

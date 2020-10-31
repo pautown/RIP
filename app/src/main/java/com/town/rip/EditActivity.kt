@@ -21,14 +21,74 @@ import java.util.*
 
 class EditActivity : AppCompatActivity() {
     private lateinit var taskViewModel: TaskViewModel
+    private var editMode:Boolean = false
+
+    lateinit var name: String
+    lateinit var description: String
+    lateinit var type: String
+    lateinit var unit_of_measurement: String
+     var minimum: Int = 0
+     var maximum: Int= 0
+    var freq: Int= 0
+    var enabled: Boolean = false
+     var attempts:Int = 0
+    var completions:Int = 0
+    var total_attempted:Int = 0
+    var total_completed: Int = 0
+    lateinit var creation_date: String
+    lateinit var update_date: String
+    var task_id:Int = 0
+
+    var message_string = "Save the new activity and return to the previous screen?"
+    var title_string = "Add Activity?"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val intentExtras = intent.extras
+        if (intentExtras?.getInt("ID") != null) editMode = true
+
+
+
+
+
+
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
         setContentView(R.layout.activity_edit)
         taskViewModel.allTasks.observe(this, Observer { tasks ->
             tasks?.let { taskViewModel.repository.allTasks }
         })
+
+        if(editMode)
+        {
+            message_string = "Modify the existing activity and return to the previous screen?"
+            title_string = "Edit Activity?"
+
+            task_id = intentExtras!!.getInt("ID")
+            textViewEditActivityHeader.text = "Edit Activity"
+            textViewEditActivitySubeader.text = "Modify Existing Activity"
+            name = intentExtras!!.getString("NAME").toString()
+            description = intentExtras!!.getString("DESC").toString()
+            type = intentExtras!!.getString("TYPE").toString()
+            unit_of_measurement = intentExtras!!.getString("U_O_M").toString()
+            minimum  = intentExtras!!.getInt("MIN")
+            maximum = intentExtras!!.getInt("MAX")
+            freq = intentExtras!!.getInt("FREQ")
+
+
+            textInputName.setText(name)
+            textInputDescription.setText(description)
+            textInputUnitOfMeasurement.setText(unit_of_measurement)
+            textInputMinUnit.setText(minimum.toString())
+            textInputMaxUnit.setText(maximum.toString())
+            textViewDaysPerWeek.setText(freq.toString())
+            seekBar.progress = freq
+            if(type == "r") {
+                radioButtonNonMinutes.isChecked = true
+                textInputUnitOfMeasurement.isEnabled = true
+            }
+
+        }
 
 
        seekBar?.setOnSeekBarChangeListener(object :
@@ -56,7 +116,7 @@ class EditActivity : AppCompatActivity() {
     fun toggleMeasurementEditOn(view: View){
         textInputUnitOfMeasurement.isEnabled = true
         textInputUnitOfMeasurement.setText("")
-        textInputUnitOfMeasurement.hint = "pages, essays, eggs, etc."
+        textInputUnitOfMeasurement.hint = "pages, essays, times, etc."
     }
     fun toggleMeasurementEditOff(view: View){
         textInputUnitOfMeasurement.isEnabled = false
@@ -67,10 +127,10 @@ class EditActivity : AppCompatActivity() {
 
     fun createTask(view: View) {
         var taskType = "t"
-        if (radioGroup.checkedRadioButtonId == 1) taskType = "r"
+        if (radioButtonNonMinutes.isChecked) taskType = "r"
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setMessage("Add this activity will return you to the main menu.")
-            .setTitle("Add Activity?")
+        builder.setMessage(message_string)
+            .setTitle(title_string)
             .setPositiveButton("Confirm",
                 DialogInterface.OnClickListener { dialog, id ->
                     var task = Task(
@@ -90,8 +150,12 @@ class EditActivity : AppCompatActivity() {
                         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
                     )
 
-                    putTask(task)
-                    // finish()
+                    if (editMode) {
+                        task.id = task_id
+                        taskViewModel.update(task)
+                    }
+                    else putTask(task)
+                    finish() // return to previous screen
                 })
             .setNegativeButton("No",
                 DialogInterface.OnClickListener { dialog, id ->

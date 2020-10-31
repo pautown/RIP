@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:text="RIP"
             android:textAlignment="center"
-            android:textSize="46sp"
+            android:textSize="66sp"
             android:textStyle="bold|italic" />
 
         <TextView
@@ -41,8 +41,8 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="278dp"
-        android:layout_height="394dp"
+        android:layout_width="283dp"
+        android:layout_height="515dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:gravity="bottom|center"
@@ -57,36 +57,41 @@
 
         ]]>
 
-        <Button
-            android:id="@+id/button"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Generate Tasks For Day"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_height="314dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"/>
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Generate Daily Activities"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/button6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="viewTasks"
-            android:text="View Tasks" />
+            android:text="View Activities" />
 
         <Button
             android:id="@+id/button5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="addTask"
-            android:text="Add Tasks"
+            android:text="Add Activity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="editTask"
-            android:text="Edit Tasks" />
 
     </LinearLayout>
 

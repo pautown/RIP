@@ -1,6 +1,7 @@
 package com.town.rip
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -13,8 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
 import kotlinx.android.synthetic.main.dynamic_linear_layout_task.view.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class ScrollingViewTask : AppCompatActivity() {
@@ -28,10 +27,6 @@ class ScrollingViewTask : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-
-
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
         setContentView(R.layout.activity_scrolling_view_tasks)
         taskViewModel.allTasks.observe(this, Observer {
@@ -72,9 +67,36 @@ class ScrollingViewTask : AppCompatActivity() {
         view.buttonInfo.setOnClickListener {
             viewTask(view)
         }
+        view.buttonScrollingViewInfoEdit.setOnClickListener{
+            startActivity(launchEditScreen(this, task))
+        }
         if (background_tint) view.dynamic_linear_layout_base_task.setBackgroundColor(Color.parseColor("#EEEEEE"))
         background_tint = !background_tint
 
+    }
+
+    fun launchEditScreen(context: Context, task: Task): Intent {
+        val intent = Intent(context, EditActivity::class.java)
+
+        val bundle = Bundle()
+        bundle.putSerializable("ID", task.id)
+        bundle.putSerializable("NAME", task.name)
+        bundle.putSerializable("DESC", task.description)
+        bundle.putSerializable("TYPE", task.type)
+        bundle.putSerializable("U_O_M", task.unit_of_measurement)
+        bundle.putSerializable("MIN", task.minimum)
+        bundle.putSerializable("MAX", task.maximum)
+        bundle.putSerializable("FREQ", task.freq)
+        bundle.putSerializable("ATTEMPTS", task.attempts)
+        bundle.putSerializable("COMPLETIONS", task.completions)
+        bundle.putSerializable("TOTAL_ATTEMPTED", task.total_attempted)
+        bundle.putSerializable("TOTAL_COMPLETED", task.total_completed)
+        bundle.putSerializable("CREATION_DATE", task.creation_date)
+        bundle.putSerializable("UPDATE_DATE", task.update_date)
+
+
+        intent.putExtras(bundle)
+        return intent
     }
 
     private fun viewTask(view: View) {

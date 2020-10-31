@@ -39,15 +39,6 @@ class MainActivity : AppCompatActivity() {
     fun addTask(view: View) {
 
 
-        val intent = Intent(this, AddTask::class.java).apply {
-            // putExtras(extras)
-        }
-        startActivity(intent)
-    }
-
-    fun editTask(view: View) {
-
-
         val intent = Intent(this, EditActivity::class.java).apply {
             // putExtras(extras)
         }
