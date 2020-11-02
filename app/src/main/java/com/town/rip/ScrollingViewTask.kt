@@ -21,7 +21,7 @@ class ScrollingViewTask : AppCompatActivity() {
     private var tasksList: List<Task> = listOf()
     private lateinit var taskViewsList: List<View>
 
-    var backgroundTint : Boolean = false;
+    private var backgroundTint : Boolean = false;
 
 
 
@@ -44,30 +44,36 @@ class ScrollingViewTask : AppCompatActivity() {
             for (task in taskViewModel.allTasks.value!!) addTask()
         }
         taskViewModel.allTasks.observe(this, Observer {
-            tasksList = taskViewModel.allTasks.value!!
-            for (task in tasksList) Log.d("LISTSVM", task.name.toString())
-            val layout = findViewById<View>(R.id.vertical_layout_view_1) as LinearLayout
-            for ((i,view) in layout.children.withIndex())
+            if(tasksList.size != taskViewModel.allTasks.value!!.size)
             {
-                val task = tasksList[i]
-                view.textViewDynamicTaskName.text = task.name
-                view.textViewDynamicTaskDescription.text = task.description
-                view.textViewDynamicTaskMagnitude.text = task.minimum.toString() + " to " + task.maximum.toString() + " " + task.unit_of_measurement + " per activity"
-                view.textViewDynamicTaskFrequency.text = task.freq.toString() + " days a week"
-                view.checkBoxDynamicTaskEnabled.isChecked = task.enabled
+                vertical_layout_view_1.removeAllViews()
+                tasksList = taskViewModel.allTasks.value!!
+                for (task in taskViewModel.allTasks.value!!) addTask()
+            }else {
+                tasksList = taskViewModel.allTasks.value!!
+                for (task in tasksList) Log.d("LISTSVM", task.name.toString())
+                val layout = findViewById<View>(R.id.vertical_layout_view_1) as LinearLayout
+                for ((i, view) in layout.children.withIndex()) {
+                    val task = tasksList[i]
+                    view.textViewDynamicTaskName.text = task.name
+                    view.textViewDynamicTaskDescription.text = task.description
+                    view.textViewDynamicTaskMagnitude.text = task.minimum.toString() + " to " + task.maximum.toString() + " " + task.unit_of_measurement + " per activity"
+                    view.textViewDynamicTaskFrequency.text = task.freq.toString() + " days a week"
+                    view.checkBoxDynamicTaskEnabled.isChecked = task.enabled
 
-                view.checkBoxDynamicTaskEnabled.setOnClickListener{
-                    task.enabled = view.checkBoxDynamicTaskEnabled.isChecked
-                    taskViewModel.update(task)
-                }
-                view.buttonInfo.setOnClickListener {
-                    viewTask(view)
-                }
-                view.buttonScrollingViewInfoEdit.setOnClickListener{
-                    startActivity(launchEditScreen(this, task))
-                }
+                    view.checkBoxDynamicTaskEnabled.setOnClickListener {
+                        task.enabled = view.checkBoxDynamicTaskEnabled.isChecked
+                        taskViewModel.update(task)
+                    }
+                    view.buttonInfo.setOnClickListener {
+                        viewTask(view)
+                    }
+                    view.buttonScrollingViewInfoEdit.setOnClickListener {
+                        startActivity(launchEditScreen(this, task))
+                    }
 
 
+                }
             }
         })
 
@@ -78,11 +84,8 @@ class ScrollingViewTask : AppCompatActivity() {
         val view: View = inflater.inflate(R.layout.dynamic_linear_layout_task, null)
         val container = findViewById<LinearLayout>(R.id.vertical_layout_view_1)
         container.addView(view)
-
-
         if (backgroundTint) view.dynamic_linear_layout_base_task.setBackgroundColor(Color.parseColor("#EEEEEE"))
         backgroundTint = !backgroundTint
-
     }
 
     fun launchEditScreen(context: Context, task: Task): Intent {
