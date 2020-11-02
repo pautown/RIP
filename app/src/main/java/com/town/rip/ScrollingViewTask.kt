@@ -60,7 +60,6 @@ class ScrollingViewTask : AppCompatActivity() {
                     view.textViewDynamicTaskMagnitude.text = task.minimum.toString() + " to " + task.maximum.toString() + " " + task.unit_of_measurement + " per activity"
                     view.textViewDynamicTaskFrequency.text = task.freq.toString() + " days a week"
                     view.checkBoxDynamicTaskEnabled.isChecked = task.enabled
-
                     view.checkBoxDynamicTaskEnabled.setOnClickListener {
                         task.enabled = view.checkBoxDynamicTaskEnabled.isChecked
                         taskViewModel.update(task)
@@ -71,8 +70,6 @@ class ScrollingViewTask : AppCompatActivity() {
                     view.buttonScrollingViewInfoEdit.setOnClickListener {
                         startActivity(launchEditScreen(this, task))
                     }
-
-
                 }
             }
         })
@@ -90,8 +87,8 @@ class ScrollingViewTask : AppCompatActivity() {
 
     fun launchEditScreen(context: Context, task: Task): Intent {
         val intent = Intent(context, EditActivity::class.java)
-
         val bundle = Bundle()
+
         bundle.putSerializable("ID", task.id)
         bundle.putSerializable("NAME", task.name)
         bundle.putSerializable("DESC", task.description)
@@ -106,15 +103,10 @@ class ScrollingViewTask : AppCompatActivity() {
         bundle.putSerializable("TOTAL_COMPLETED", task.total_completed)
         bundle.putSerializable("CREATION_DATE", task.creation_date)
         bundle.putSerializable("UPDATE_DATE", task.update_date)
-
-
         intent.putExtras(bundle)
-
-
         return intent
     }
     private fun viewTask(view: View) {
-
         if (view.linearLayoutInfo.visibility == View.VISIBLE) view.linearLayoutInfo.visibility = View.GONE
         else view.linearLayoutInfo.visibility = View.VISIBLE
     }

@@ -10,8 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".EditActivity"></activity>
-        <activity android:name=".TaskInfo" />
-        <activity android:name=".AddTask" />
         <activity android:name=".ScrollingViewTask" />
         <activity
             android:name=".ScrollingActivityViewTasks"
@@ -20,7 +18,6 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
