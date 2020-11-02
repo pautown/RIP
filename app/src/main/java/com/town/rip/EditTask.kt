@@ -19,7 +19,7 @@ import java.time.LocalDate
 import java.util.*
 
 
-class EditActivity : AppCompatActivity() {
+class EditTask : AppCompatActivity() {
     private lateinit var taskViewModel: TaskViewModel
     private var editMode:Boolean = false
 

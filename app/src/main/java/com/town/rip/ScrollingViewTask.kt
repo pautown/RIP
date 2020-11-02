@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.dynamic_linear_layout_task.view.*
 class ScrollingViewTask : AppCompatActivity() {
     private lateinit var taskViewModel :TaskViewModel
     private var tasksList: List<Task> = listOf()
-    private lateinit var taskViewsList: List<View>
 
     private var backgroundTint : Boolean = false;
 
@@ -86,7 +85,7 @@ class ScrollingViewTask : AppCompatActivity() {
     }
 
     fun launchEditScreen(context: Context, task: Task): Intent {
-        val intent = Intent(context, EditActivity::class.java)
+        val intent = Intent(context, EditTask::class.java)
         val bundle = Bundle()
 
         bundle.putSerializable("ID", task.id)
