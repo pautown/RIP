@@ -247,7 +247,7 @@
                             android:id="@+id/textView6"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Activity Duration Range "
+                            android:text="Activity Magnitude Range "
                             android:textAlignment="center"
                             android:textSize="14sp"
                             android:textStyle="italic" />
@@ -264,10 +264,12 @@
 
                     <TextView
                         android:id="@+id/textViewDaysPerWeek"
-                        android:layout_width="176dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
+                        android:layout_width="206dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="-15dp"
+                        android:gravity="bottom"
                         android:text="3"
+                        android:textAlignment="center"
                         android:textSize="86sp"
                         android:textStyle="bold" />
 
@@ -319,6 +321,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
+                        android:backgroundTint="#F3F3F3"
                         android:text="Cancel" />
 
                     <Button
@@ -327,9 +330,21 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
+                        android:backgroundTint="#F3F3F3"
                         android:onClick="createTask"
                         android:text="Finish" />
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/buttonActivityEditDelete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="#BD1414"
+                    android:onClick="deleteTask"
+                    android:text="Delete Activity"
+                    android:textColor="#FFFFFF" />
 
             </LinearLayout>
         </ScrollView>

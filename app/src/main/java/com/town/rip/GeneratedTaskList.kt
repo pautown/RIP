@@ -13,6 +13,7 @@ class GeneratedTaskList (
     var amount_to_complete: Int,
     var task_list_id: Int,
     var task_id: Int,
+    var task_list_finished: Boolean = false,
     var amount_completed: Int = 0
 ){
     @PrimaryKey(autoGenerate = true)

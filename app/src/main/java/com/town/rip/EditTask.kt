@@ -88,7 +88,7 @@ class EditTask : AppCompatActivity() {
                 textInputUnitOfMeasurement.isEnabled = true
             }
 
-        }
+        } else buttonActivityEditDelete.visibility =  View.GONE
 
 
        seekBar?.setOnSeekBarChangeListener(object :
@@ -122,6 +122,25 @@ class EditTask : AppCompatActivity() {
         textInputUnitOfMeasurement.isEnabled = false
         textInputUnitOfMeasurement.hint = "minutes"
         textInputUnitOfMeasurement.setText("minutes")
+    }
+
+    fun deleteTask(view:View){
+
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setMessage("This will permanently remove your activity from generation.")
+            .setTitle(title_string)
+            .setPositiveButton("Delete Activity?",
+                DialogInterface.OnClickListener { dialog, id ->
+                    taskViewModel.delete(taskViewModel.allTasks.value!!.find{ it.id == task_id}!!)
+                    finish() // return to previous screen
+                })
+            .setNegativeButton("No",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // CANCEL
+                })
+
+        val alert = builder.create()
+        alert.show()
     }
     
 
@@ -164,9 +183,6 @@ class EditTask : AppCompatActivity() {
 
         val alert = builder.create()
         alert.show()
-
-
-
     }
 
     private fun putTask(task:Task) {
