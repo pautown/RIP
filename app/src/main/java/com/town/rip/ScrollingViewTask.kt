@@ -48,31 +48,36 @@ class ScrollingViewTask : AppCompatActivity() {
                 vertical_layout_view_1.removeAllViews()
                 tasksList = taskViewModel.allTasks.value!!
                 for (task in taskViewModel.allTasks.value!!) addTask()
+                updateTaskDisplays()
             }else {
                 tasksList = taskViewModel.allTasks.value!!
                 for (task in tasksList) Log.d("LISTSVM", task.name.toString())
-                val layout = findViewById<View>(R.id.vertical_layout_view_1) as LinearLayout
-                for ((i, view) in layout.children.withIndex()) {
-                    val task = tasksList[i]
-                    view.textViewDynamicTaskName.text = task.name
-                    view.textViewDynamicTaskDescription.text = task.description
-                    view.textViewDynamicTaskMagnitude.text = task.minimum.toString() + " to " + task.maximum.toString() + " " + task.unit_of_measurement + " per activity"
-                    view.textViewDynamicTaskFrequency.text = task.freq.toString() + " days a week"
-                    view.checkBoxDynamicTaskEnabled.isChecked = task.enabled
-                    view.checkBoxDynamicTaskEnabled.setOnClickListener {
-                        task.enabled = view.checkBoxDynamicTaskEnabled.isChecked
-                        taskViewModel.update(task)
-                    }
-                    view.buttonInfo.setOnClickListener {
-                        viewTask(view)
-                    }
-                    view.buttonScrollingViewInfoEdit.setOnClickListener {
-                        startActivity(launchEditScreen(this, task))
-                    }
-                }
+                updateTaskDisplays()
             }
         })
 
+    }
+
+    private fun updateTaskDisplays() {
+        val layout = findViewById<View>(R.id.vertical_layout_view_1) as LinearLayout
+        for ((i, view) in layout.children.withIndex()) {
+            val task = tasksList[i]
+            view.textViewDynamicTaskName.text = task.name
+            view.textViewDynamicTaskDescription.text = task.description
+            view.textViewDynamicTaskMagnitude.text = task.minimum.toString() + " to " + task.maximum.toString() + " " + task.unit_of_measurement + " per activity"
+            view.textViewDynamicTaskFrequency.text = task.freq.toString() + " days a week"
+            view.checkBoxDynamicTaskEnabled.isChecked = task.enabled
+            view.checkBoxDynamicTaskEnabled.setOnClickListener {
+                task.enabled = view.checkBoxDynamicTaskEnabled.isChecked
+                taskViewModel.update(task)
+            }
+            view.buttonInfo.setOnClickListener {
+                viewTask(view)
+            }
+            view.buttonScrollingViewInfoEdit.setOnClickListener {
+                startActivity(launchEditScreen(this, task))
+            }
+        }
     }
 
     private fun addTask(){
