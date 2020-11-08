@@ -13,7 +13,7 @@ class GeneratedTaskListViewModel(application: Application) : AndroidViewModel(ap
     // - We can put an observer on the data (instead of polling for changes) and only update the
     //   the UI when the data actually changes.
     // - Repository is completely separated from the UI through the ViewModel.
-    var allTasks: LiveData<List<GeneratedTaskList>>
+    var allTasks: LiveData<List<GeneratedTask>>
 
     init {
         val generatedTaskListsDao = GeneratedTaskListRoomDatabase.getDatabase(application, viewModelScope).generatedTaskListDao()
@@ -26,15 +26,15 @@ class GeneratedTaskListViewModel(application: Application) : AndroidViewModel(ap
     /**
      * Launching a new coroutine to insert the data in a non-blocking way
      */
-    fun insert(generatedTaskList: GeneratedTaskList) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insert(generatedTaskList)
+    fun insert(generatedTask: GeneratedTask) = viewModelScope.launch(Dispatchers.IO) {
+        repository.insert(generatedTask)
     }
 
-    fun update(generatedTaskList: GeneratedTaskList) = viewModelScope.launch(Dispatchers.IO) {
-        repository.update(generatedTaskList)
+    fun update(generatedTask: GeneratedTask) = viewModelScope.launch(Dispatchers.IO) {
+        repository.update(generatedTask)
     }
 
-    fun delete(generatedTaskList: GeneratedTaskList) = viewModelScope.launch(Dispatchers.IO) {
-        repository.delete(generatedTaskList)
+    fun delete(generatedTask: GeneratedTask) = viewModelScope.launch(Dispatchers.IO) {
+        repository.delete(generatedTask)
     }
 }

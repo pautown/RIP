@@ -9,15 +9,15 @@ class GeneratedTaskListRepository(private val generatedTaskListDao: GeneratedTas
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    val allGeneratedTaskLists: LiveData<List<GeneratedTaskList>> = generatedTaskListDao.getAllGeneratedTaskLists()
+    val allGeneratedTaskLists: LiveData<List<GeneratedTask>> = generatedTaskListDao.getAllGeneratedTaskLists()
 
-    suspend fun insert(generatedTaskList: GeneratedTaskList) {
-        generatedTaskListDao.insert(generatedTaskList)
+    suspend fun insert(generatedTask: GeneratedTask) {
+        generatedTaskListDao.insert(generatedTask)
     }
-    suspend fun update(generatedTaskList: GeneratedTaskList){
-        generatedTaskListDao.update(generatedTaskList)
+    suspend fun update(generatedTask: GeneratedTask){
+        generatedTaskListDao.update(generatedTask)
     }
-    suspend fun delete(generatedTaskList: GeneratedTaskList){
-        generatedTaskListDao.delete(generatedTaskList)
+    suspend fun delete(generatedTask: GeneratedTask){
+        generatedTaskListDao.delete(generatedTask)
     }
 }

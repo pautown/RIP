@@ -6,72 +6,137 @@
     android:layout_height="match_parent"
     tools:context=".GeneratedTaskListActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ScrollingViewTask">
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Generated Activities"
-            android:textAlignment="center"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="86dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textViewScrrollingViewTasksSubheading"
-            android:layout_width="218dp"
-            android:layout_height="16dp"
-            android:text="12 Total Tasks, 5 Enabled"
-            android:textAlignment="center"
-            android:textAllCaps="false"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Generated Activities"
+                android:textAlignment="center"
+                android:textSize="36sp"
+                android:textStyle="bold" />
 
-        <ScrollView
-            android:id="@+id/scroll"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="5dp"
-            android:clipToPadding="false"
-            android:fillViewport="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewScrrollingViewTasksSubheading">
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ScrollView
+                android:id="@+id/scrollGeneratedActivities"
+                android:layout_width="match_parent"
+                android:layout_height="362dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="3"
+                android:clipToPadding="false"
+                android:fillViewport="true">
+
+
+                <LinearLayout
+                    android:id="@+id/vertical_layout_view_generated_activities"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:scrollbarAlwaysDrawHorizontalTrack="false"
+                    android:scrollbarAlwaysDrawVerticalTrack="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:layout_editor_absoluteX="17dp" />
+            </ScrollView>
 
             <LinearLayout
-                android:id="@+id/vertical_layout_view_1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="vertical"
-                android:scrollbarAlwaysDrawHorizontalTrack="false"
-                android:scrollbarAlwaysDrawVerticalTrack="false"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                tools:layout_editor_absoluteX="17dp">
+                android:layout_height="match_parent"
+                android:layout_weight="9"
+                android:gravity="center|center_horizontal"
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/button2"
-                    android:layout_width="392dp"
+                <LinearLayout
+                    android:id="@+id/linearLayoutGeneratedTasksHUD"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Button" />
-            </LinearLayout>
-        </ScrollView>
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/textViewGeneratedTaskListHUDName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Read Book"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textViewGeneratedTaskListHUDDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:text="spend some time reading pages from a book"
+                        android:textAlignment="center"
+                        android:textStyle="italic" />
+
+                    <TextView
+                        android:id="@+id/textViewGeneratedTaskListHUDCompleted"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:text="17/34"
+                        android:textAlignment="center"
+                        android:textSize="36sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textViewGeneratedTaskListHUDUOM"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="minutes completed" />
+
+                    <SeekBar
+                        android:id="@+id/seekBarGeneratedTaskList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:max="34"
+                        android:progress="17" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textViewGeneratedTaskListPlaceholder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap a task to view/update progress"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

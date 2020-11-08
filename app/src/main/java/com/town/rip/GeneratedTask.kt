@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "generated_task_list_table")
-class GeneratedTaskList (
+class GeneratedTask (
     var name: String,
     var description: String,
     var type: String,

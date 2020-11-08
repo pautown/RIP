@@ -8,24 +8,24 @@ import androidx.room.*
 interface GeneratedTaskListDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(generatedTaskList: GeneratedTaskList)
+    suspend fun insert(generatedTask: GeneratedTask)
 
     @Query("SELECT * from generated_task_list_table ORDER BY name ASC")
-    fun getAlphabetizedWords():  LiveData<List<GeneratedTaskList>>
+    fun getAlphabetizedWords():  LiveData<List<GeneratedTask>>
 
     @Query("SELECT * from generated_task_list_table")
-    fun getAllGeneratedTaskLists(): LiveData<List<GeneratedTaskList>>
+    fun getAllGeneratedTaskLists(): LiveData<List<GeneratedTask>>
 
     @Insert
-    fun addMultipleTasks(vararg generatedTaskList: GeneratedTaskList)
+    fun addMultipleTasks(vararg generatedTask: GeneratedTask)
 
     @Query("DELETE FROM generated_task_list_table")
     suspend fun deleteAll()
 
     @Delete
-    suspend fun delete(generatedTaskList: GeneratedTaskList)
+    suspend fun delete(generatedTask: GeneratedTask)
 
     @Update
-    suspend fun update(generatedTaskList: GeneratedTaskList)
+    suspend fun update(generatedTask: GeneratedTask)
 
 }
