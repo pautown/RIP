@@ -10,6 +10,9 @@
         android:id="@+id/linear_layout_generated_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -17,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:orientation="horizontal">
 
@@ -44,34 +47,68 @@
                     android:layout_marginEnd="5dp"
                     android:text="1/3"
                     android:textAlignment="textEnd"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/textViewGeneratedTaskProgressUnitOfMeasure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
                     android:text="times"
                     android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/textViewGeneratedTaskProgressPercentage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="33%"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-        <ProgressBar
-            android:id="@+id/progressBarGeneratedTask"
-            style="?android:attr/progressBarStyleHorizontal"
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textViewGeneratedTaskDeskcription"
+                android:layout_width="291dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/textViewGeneratedTaskProgressPercentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:text="100%"
+                android:textAlignment="viewEnd"
+                android:textSize="14sp"
+                android:textStyle="italic" />
+        </TableRow>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ProgressBar
+                android:id="@+id/progressBarGeneratedTask"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/seekBarGeneratedTask"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="3dp"
+            android:background="?android:attr/listDivider" />
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

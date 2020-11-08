@@ -57,14 +57,67 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         )
 
         listOfGeneratedTasks.add(task_generated)
-        listOfGeneratedTaskViews.add(view)
+
         view.progressBarGeneratedTask.max = task_generated.amount_to_complete
+        view.textViewGeneratedTaskDeskcription.text = task_generated.description
         view.textViewGeneratedTaskName.text = task_generated.name
         view.linear_layout_generated_task.isClickable = true
         var view_index = listOfGeneratedTasks.size - 1
-        view.linear_layout_generated_task.setOnClickListener{updateHUD(view_index)}
+        view.seekBarGeneratedTask.visibility = View.GONE
+        view.linear_layout_generated_task.setOnClickListener{
+            if(view.progressBarGeneratedTask.visibility == View.VISIBLE) {
+                for(generated_task_view in listOfGeneratedTaskViews)
+                {
+                    generated_task_view.progressBarGeneratedTask.visibility = View.VISIBLE
+                    generated_task_view.seekBarGeneratedTask.visibility = View.GONE
+                }
+                view.progressBarGeneratedTask.visibility = View.GONE
+                view.seekBarGeneratedTask.visibility = View.VISIBLE
+            }
+            else{
+                view.progressBarGeneratedTask.visibility = View.VISIBLE
+                view.seekBarGeneratedTask.visibility = View.GONE
+            }
+
+        }
+        listOfGeneratedTaskViews.add(view)
 
         updateGeneratedTaskDisplay(view_index)
+        view.textViewGeneratedTaskProgressUnitOfMeasure.text = task_generated.unit_of_measurement
+
+        view.seekBarGeneratedTask.max = task_generated.amount_to_complete
+        view.seekBarGeneratedTask.progress = task_generated.amount_completed
+        view.textViewGeneratedTaskProgressText.text = task_generated.amount_completed.toString() + "/" + task_generated.amount_to_complete.toString()
+
+        view.seekBarGeneratedTask.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                seek: SeekBar,
+                progress: Int, fromUser: Boolean
+            ) {
+                task_generated.amount_completed = view.seekBarGeneratedTask.progress
+                view.textViewGeneratedTaskProgressText.text = task_generated.amount_completed.toString() + "/" + task_generated.amount_to_complete.toString()
+                view.progressBarGeneratedTask.progress = view.seekBarGeneratedTask.progress
+                task_generated.amount_completed.toString() + "/" + task_generated.amount_to_complete.toString()
+                if(task_generated.amount_completed != 0) {
+                    view.textViewGeneratedTaskProgressPercentage.text = ((task_generated.amount_completed * 100.0f) / task_generated.amount_to_complete).toInt().toString() + "%"
+                    view.progressBarGeneratedTask.progress = task_generated.amount_completed
+                }
+                else{
+                    view.progressBarGeneratedTask.progress = 0
+                    view.textViewGeneratedTaskProgressPercentage.text = "0%"
+                }
+            }
+
+            override fun onStartTrackingTouch(seek: SeekBar) {
+                // write custom code for progress is started
+            }
+
+            override fun onStopTrackingTouch(seek: SeekBar) {
+                // write custom code for progress is stopped
+
+            }
+        })
 
 
         if (backgroundTint) view.linear_layout_generated_task.setBackgroundColor(Color.parseColor("#EEEEEE"))
@@ -79,32 +132,13 @@ class GeneratedTaskListActivity : AppCompatActivity() {
 
         var task_generated = listOfGeneratedTasks[i]
         textViewGeneratedTaskListHUDName.text = task_generated.name
-        textViewGeneratedTaskListHUDDescription.text = task_generated.description
+        //textViewGeneratedTaskListHUDDescription.text = task_generated.description
         textViewGeneratedTaskListHUDUOM.text = task_generated.unit_of_measurement + " completed"
         textViewGeneratedTaskListHUDCompleted.text = task_generated.amount_completed.toString() + "/" + task_generated.amount_to_complete.toString()
-
-        seekBarGeneratedTaskList.setOnSeekBarChangeListener(null)
         seekBarGeneratedTaskList.max = task_generated.amount_to_complete
         seekBarGeneratedTaskList.progress = task_generated.amount_completed
 
-        seekBarGeneratedTaskList.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(
-                seek: SeekBar,
-                progress: Int, fromUser: Boolean
-            ) {
-                updateHUDSEEKBAR(i)
-            }
 
-            override fun onStartTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is started
-            }
-
-            override fun onStopTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is stopped
-
-            }
-        })
 
 
         return null
@@ -124,17 +158,7 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         var view = listOfGeneratedTaskViews[i]
         var task_generated = listOfGeneratedTasks[i]
 
-        view.textViewGeneratedTaskProgressUnitOfMeasure.text = task_generated.unit_of_measurement
-        view.textViewGeneratedTaskProgressText.text = task_generated.amount_completed.toString() + "/" + task_generated.amount_to_complete.toString()
 
-        if(task_generated.amount_completed != 0) {
-            view.textViewGeneratedTaskProgressPercentage.text = ((task_generated.amount_completed * 100.0f) / task_generated.amount_to_complete).toInt().toString() + "%"
-            view.progressBarGeneratedTask.progress = task_generated.amount_completed
-        }
-        else{
-            view.progressBarGeneratedTask.progress = 0
-            view.textViewGeneratedTaskProgressPercentage.text = "0%"
-        }
     }
 
     private fun addTaskToNewGeneratedList(task: Task) {
