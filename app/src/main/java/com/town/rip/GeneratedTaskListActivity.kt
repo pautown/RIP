@@ -11,15 +11,16 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.android.synthetic.main.activity_edit.*
+import com.town.rip.database.GeneratedTask
+import com.town.rip.database.Task
+import com.town.rip.database.TaskViewModel
 import kotlinx.android.synthetic.main.activity_generated_task_list.*
 import kotlinx.android.synthetic.main.dynamic_generated_task.view.*
-import kotlinx.android.synthetic.main.dynamic_linear_layout_task.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class GeneratedTaskListActivity : AppCompatActivity() {
-    private lateinit var taskViewModel :TaskViewModel
+    private lateinit var taskViewModel : TaskViewModel
     private var tasksList: List<Task> = listOf()
     private var backgroundTint : Boolean = false;
     private var listOfGeneratedTasks: MutableList<GeneratedTask> = mutableListOf()
@@ -52,7 +53,8 @@ class GeneratedTaskListActivity : AppCompatActivity() {
             SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
             (task.minimum..task.maximum).random(),
             0,
-            task.id)
+            task.id
+        )
 
         listOfGeneratedTasks.add(task_generated)
         listOfGeneratedTaskViews.add(view)
@@ -135,7 +137,7 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         }
     }
 
-    private fun addTaskToNewGeneratedList(task:Task) {
+    private fun addTaskToNewGeneratedList(task: Task) {
         if((1..7).random() <= task.freq){
             addTask(task)
             Log.d("New Random Task", task.name.toString())

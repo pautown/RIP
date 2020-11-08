@@ -1,9 +1,12 @@
-package com.town.rip
+package com.town.rip.database
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.town.rip.database.GeneratedTask
+import com.town.rip.database.GeneratedTaskListRepository
+import com.town.rip.database.GeneratedTaskListRoomDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -18,7 +21,9 @@ class GeneratedTaskListViewModel(application: Application) : AndroidViewModel(ap
     init {
         val generatedTaskListsDao = GeneratedTaskListRoomDatabase.getDatabase(application, viewModelScope).generatedTaskListDao()
 
-        repository = GeneratedTaskListRepository(generatedTaskListsDao)
+        repository = GeneratedTaskListRepository(
+            generatedTaskListsDao
+        )
         allTasks = repository.allGeneratedTaskLists
 
     }

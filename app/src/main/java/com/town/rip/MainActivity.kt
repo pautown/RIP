@@ -7,6 +7,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.town.rip.database.Task
+import com.town.rip.database.TaskViewModel
 
 
 class MainActivity : AppCompatActivity() {

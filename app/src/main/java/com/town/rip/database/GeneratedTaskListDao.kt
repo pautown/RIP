@@ -1,7 +1,8 @@
-package com.town.rip
+package com.town.rip.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.town.rip.database.GeneratedTask
 
 
 @Dao

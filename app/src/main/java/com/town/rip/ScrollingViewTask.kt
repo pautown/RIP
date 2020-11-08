@@ -12,12 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.town.rip.database.Task
+import com.town.rip.database.TaskViewModel
 import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
 import kotlinx.android.synthetic.main.dynamic_linear_layout_task.view.*
 
 
 class ScrollingViewTask : AppCompatActivity() {
-    private lateinit var taskViewModel :TaskViewModel
+    private lateinit var taskViewModel : TaskViewModel
     private var tasksList: List<Task> = listOf()
 
     private var backgroundTint : Boolean = false;

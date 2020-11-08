@@ -1,4 +1,4 @@
-package com.town.rip
+package com.town.rip.database
 
 import android.content.Context
 import androidx.room.Database
@@ -9,12 +9,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(GeneratedTask::class), version = 1, exportSchema = false)
-abstract class GeneratedTaskListRoomDatabase : RoomDatabase() {
+@Database(entities = arrayOf(Task::class), version = 2, exportSchema = false)
+abstract class TaskRoomDatabase : RoomDatabase() {
 
-    abstract fun generatedTaskListDao(): GeneratedTaskListDao
+    abstract fun taskDao(): TaskDao
 
-    private class GeneratedTaskListDatabaseCallback(
+    private class TaskDatabaseCallback(
         private val scope: CoroutineScope
     ) : RoomDatabase.Callback() {
 
@@ -22,11 +22,11 @@ abstract class GeneratedTaskListRoomDatabase : RoomDatabase() {
             super.onOpen(db)
             INSTANCE?.let { database ->
                 scope.launch {
-                    populateDatabase(database.generatedTaskListDao())
+                    populateDatabase(database.taskDao())
                 }
             }
         }
-        suspend fun populateDatabase(generatedTaskListDao: GeneratedTaskListDao) {
+        suspend fun populateDatabase(taskDao: TaskDao) {
 
         }
     }
@@ -35,24 +35,29 @@ abstract class GeneratedTaskListRoomDatabase : RoomDatabase() {
         // Singleton prevents multiple instances of database opening at the
         // same time.
         @Volatile
-        private var INSTANCE: GeneratedTaskListRoomDatabase? = null
+        private var INSTANCE: TaskRoomDatabase? = null
 
         fun getDatabase(
             context: Context,
             scope: CoroutineScope
-        ): GeneratedTaskListRoomDatabase {
-            val tempInstance = INSTANCE
+        ): TaskRoomDatabase {
+            val tempInstance =
+                INSTANCE
             if (tempInstance != null) {
                 return tempInstance
             }
             synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    GeneratedTaskListRoomDatabase::class.java,
-                    "generated_task_list_database"
-                ).addCallback(GeneratedTaskListDatabaseCallback(scope))
+                    TaskRoomDatabase::class.java,
+                    "task_database"
+                ).addCallback(
+                    TaskDatabaseCallback(
+                        scope
+                    )
+                )
                     .fallbackToDestructiveMigration()
-                    .build()
+                 .build()
                 INSTANCE = instance
                 return instance
             }

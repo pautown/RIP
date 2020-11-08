@@ -1,7 +1,8 @@
-package com.town.rip
+package com.town.rip.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.town.rip.database.Task
 
 
 @Dao
@@ -17,7 +18,7 @@ interface TaskDao {
     fun getAllTasks(): LiveData<List<Task>>
 
     @Insert
-    fun addMultipleTasks(vararg task:Task)
+    fun addMultipleTasks(vararg task: Task)
 
     @Query("DELETE FROM task_table")
     suspend fun deleteAll()

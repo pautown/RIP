@@ -1,9 +1,12 @@
-package com.town.rip
+package com.town.rip.database
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.town.rip.database.Task
+import com.town.rip.database.TaskRepository
+import com.town.rip.database.TaskRoomDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

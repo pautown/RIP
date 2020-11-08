@@ -4,18 +4,16 @@ package com.town.rip
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.SeekBar
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.town.rip.database.Task
+import com.town.rip.database.TaskViewModel
 import kotlinx.android.synthetic.main.activity_edit.*
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 
 
@@ -160,7 +158,7 @@ class EditTask : AppCompatActivity() {
                         textInputMinUnit.text.toString().toInt(),
                         textInputMaxUnit.text.toString().toInt(),
                         textViewDaysPerWeek.text.toString().toInt(),
-                        true ,
+                        true,
                         0,
                         0,
                         0,
@@ -185,7 +183,7 @@ class EditTask : AppCompatActivity() {
         alert.show()
     }
 
-    private fun putTask(task:Task) {
+    private fun putTask(task: Task) {
         class PutTask : AsyncTask<Void, Void, Void>(){
             override fun doInBackground(vararg params: Void?): Void? {
                 taskViewModel.insert(task)

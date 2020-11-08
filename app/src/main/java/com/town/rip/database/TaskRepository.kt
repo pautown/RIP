@@ -1,8 +1,8 @@
-package com.town.rip
+package com.town.rip.database
 
 import androidx.lifecycle.LiveData
-import com.town.rip.Task
-import com.town.rip.TaskDao
+import com.town.rip.database.Task
+import com.town.rip.database.TaskDao
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
