@@ -17,19 +17,20 @@ import com.town.rip.database.GeneratedTaskListViewModel
 import com.town.rip.database.Task
 import com.town.rip.database.TaskViewModel
 import kotlinx.android.synthetic.main.activity_generated_task_list.*
-import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
 import kotlinx.android.synthetic.main.dynamic_generated_task.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class GeneratedTaskListActivity : AppCompatActivity() {
+    private var finished_generating_tasks: Boolean = false
     private lateinit var taskViewModel : TaskViewModel
     private lateinit var generatedTaskViewModel : GeneratedTaskListViewModel
-    private var task_id: Int = 0
-    private var generatedTasksList: List<GeneratedTask> = listOf()
+    private var session_task_list_id: Int = 0
+    private var tasksList: List<GeneratedTask> = listOf()
     private var backgroundTint : Boolean = false;
-    private var listOfGeneratedTasks: MutableList<GeneratedTask> = mutableListOf()
+    private var generatedTaskList: List<GeneratedTask> = listOf()
     private var listOfGeneratedTaskViews: MutableList<View> = mutableListOf()
+    private var generatedTaskCount: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,31 +38,28 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         generatedTaskViewModel = ViewModelProvider(this).get(GeneratedTaskListViewModel::class.java)
 
         setContentView(R.layout.activity_generated_task_list)
-
         generatedTaskViewModel.allTasks.observe(this, Observer {
            // /*
-                generatedTasksList = generatedTaskViewModel.allTasks.value!!
-                if(generatedTasksList.isNotEmpty()) task_id = generatedTasksList.last().task_list_id.toInt() + 1
-                Log.d("task list id final", task_id.toString())
+                tasksList = generatedTaskViewModel.allTasks.value!!
+                if(tasksList.isNotEmpty()) session_task_list_id = tasksList.last().task_list_id.toInt() + 1
+                Log.d("task list id final", session_task_list_id.toString())
                 taskViewModel.allTasks.observe(this, Observer {
-                    for (task in taskViewModel.allTasks.value!!) addTaskToNewGeneratedList(task)
-
+                    for (task in taskViewModel.allTasks.value!!) addGeneratedTaskToNewGeneratedList(task)
+                    finished_generating_tasks = true
                 })
                 generatedTaskViewModel.allTasks.removeObservers(this)
                 generatedTaskViewModel.allTasks.observe(this, Observer {
-                    generatedTasksList = generatedTaskViewModel.allTasks.value!!
-                    for ((i, task) in listOfGeneratedTasks.withIndex()) {
-                        task.id = generatedTasksList[(generatedTasksList.size) - listOfGeneratedTasks.size].id + i
-                        Log.d("task id",  task.id.toString())
-                    } // loop through newly created tasks and set id to match (for updating in db later)
+                    tasksList = generatedTaskViewModel.allTasks.value!!
+                    if(generatedTaskList.size != tasksList.filter{it.task_list_id == session_task_list_id}.size) {
+                        if(tasksList.filter { it.task_list_id == session_task_list_id }.size == generatedTaskCount && finished_generating_tasks){
+                            generatedTaskList = tasksList.filter { it.task_list_id == session_task_list_id }
+                            for(task in generatedTaskList) addTaskView(task)
+                        }
+                    }
                 })
 
             // */
-          //  generatedTaskViewModel.deleteAll()
-
         })
-
-
 
         vertical_layout_view_generated_activities.setOnClickListener{
             for(generated_task_view in listOfGeneratedTaskViews)
@@ -70,19 +68,26 @@ class GeneratedTaskListActivity : AppCompatActivity() {
                 generated_task_view.seekBarGeneratedTask.visibility = View.GONE
             }
         }
-
-
-
-
     }
 
-    private fun createGeneratedTasks() {
-        taskViewModel.allTasks.observe(this, Observer {
-            if(!taskViewModel.allTasks.value.isNullOrEmpty()) {
-                for (task in taskViewModel.allTasks.value!!) addTaskToNewGeneratedList(task)
-            }
-        })
+    private fun addGeneratedTaskToNewGeneratedList(task: Task) {
+        if((1..7).random() <= task.freq){
+            generatedTaskCount ++
+            Log.d("New Random Task", task.name.toString())
+            var random_task = GeneratedTask(
+                task.name,
+                task.description,
+                task.type,
+                task.unit_of_measurement,
+                SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+                (task.minimum..task.maximum).random(),
+                session_task_list_id,
+                task.id
+            )
+            putTask(random_task)
+        }
     }
+
     private fun putTask(task: GeneratedTask) {
         class PutTask : AsyncTask<Void, Void, Void>(){
             override fun doInBackground(vararg params: Void?): Void? {
@@ -94,24 +99,11 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         PutTask().execute()
     }
 
-    private fun addTask(task: Task){
+    private fun addTaskView(task_generated: GeneratedTask){
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view: View = inflater.inflate(R.layout.dynamic_generated_task, null)
         val container = findViewById<LinearLayout>(R.id.vertical_layout_view_generated_activities)
         container.addView(view)
-        var task_generated = GeneratedTask(
-            task.name,
-            task.description,
-            task.type,
-            task.unit_of_measurement,
-            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
-            (task.minimum..task.maximum).random(),
-            task_id,
-            task.id
-        )
-
-
-        listOfGeneratedTasks.add(task_generated)
 
         view.progressBarGeneratedTask.max = task_generated.amount_to_complete
         view.textViewGeneratedTaskDeskcription.text = task_generated.description
@@ -162,28 +154,15 @@ class GeneratedTaskListActivity : AppCompatActivity() {
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is started
             }
 
             override fun onStopTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is stopped
                 generatedTaskViewModel.update(task_generated)
-                Log.d("task modified id",task_generated.id.toString())
-                Log.d("task modified completed",task_generated.amount_completed.toString())
-                Log.d("task progress modified",task_generated.name)
-
             }
         })
-        putTask(task_generated)
+
         if (backgroundTint) view.linear_layout_generated_task.setBackgroundColor(Color.parseColor("#EEEEEE"))
         backgroundTint = !backgroundTint
     }
 
-
-    private fun addTaskToNewGeneratedList(task: Task) {
-        if((1..7).random() <= task.freq){
-            addTask(task)
-            Log.d("New Random Task", task.name.toString())
-        }
-    }
 }
