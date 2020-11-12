@@ -42,4 +42,8 @@ class GeneratedTaskListViewModel(application: Application) : AndroidViewModel(ap
     fun delete(generatedTask: GeneratedTask) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(generatedTask)
     }
+
+    fun deleteAll() = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteAll()
+    }
 }

@@ -13,13 +13,17 @@ class GeneratedTaskListRepository(private val generatedTaskListDao: GeneratedTas
     // Observed LiveData will notify the observer when the data has changed.
     val allGeneratedTaskLists: LiveData<List<GeneratedTask>> = generatedTaskListDao.getAllGeneratedTaskLists()
 
-    suspend fun insert(generatedTask: GeneratedTask) {
-        generatedTaskListDao.insert(generatedTask)
+    suspend fun insert(generatedTask: GeneratedTask): Long {
+        return generatedTaskListDao.insert(generatedTask)
     }
     suspend fun update(generatedTask: GeneratedTask){
         generatedTaskListDao.update(generatedTask)
     }
     suspend fun delete(generatedTask: GeneratedTask){
         generatedTaskListDao.delete(generatedTask)
+    }
+
+    suspend fun deleteAll() {
+        generatedTaskListDao.deleteAll()
     }
 }

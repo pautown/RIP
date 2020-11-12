@@ -9,7 +9,7 @@ import com.town.rip.database.GeneratedTask
 interface GeneratedTaskListDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(generatedTask: GeneratedTask)
+    suspend fun insert(generatedTask: GeneratedTask): Long
 
     @Query("SELECT * from generated_task_list_table ORDER BY name ASC")
     fun getAlphabetizedWords():  LiveData<List<GeneratedTask>>
