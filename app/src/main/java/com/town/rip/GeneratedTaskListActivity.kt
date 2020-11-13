@@ -57,10 +57,6 @@ class GeneratedTaskListActivity : AppCompatActivity() {
 
                     generatedTaskViewModel.allTasks.removeObservers(this)
                 }
-
-
-
-
             // */
         })
 
@@ -102,6 +98,11 @@ class GeneratedTaskListActivity : AppCompatActivity() {
     }
 
     private fun createNewGeneratedTasks(): View.OnClickListener?{
+        for(task in tasksList.filter{ it.task_list_id == session_task_list_id - 1})
+        {
+            task.task_list_finished = true
+            generatedTaskViewModel.update(task)
+        }
         linear_layout_generated_session_init.visibility = View.GONE
         generateNewTasks()
         return null
