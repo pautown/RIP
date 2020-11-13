@@ -40,23 +40,26 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_generated_task_list)
         generatedTaskViewModel.allTasks.observe(this, Observer {
            // /*
+            //generatedTaskViewModel.deleteAll()
                 tasksList = generatedTaskViewModel.allTasks.value!!
                 if(tasksList.isNotEmpty()) session_task_list_id = tasksList.last().task_list_id.toInt() + 1
-                Log.d("task list id final", session_task_list_id.toString())
-                taskViewModel.allTasks.observe(this, Observer {
-                    for (task in taskViewModel.allTasks.value!!) addGeneratedTaskToNewGeneratedList(task)
-                    finished_generating_tasks = true
-                })
+            Log.d("task list id", session_task_list_id.toString())
+
+            if(tasksList.isEmpty() || tasksList.filter{ it.task_list_id == session_task_list_id - 1}.last().task_list_finished){ // generate new tasks if no unfinished tasks in last list
                 generatedTaskViewModel.allTasks.removeObservers(this)
-                generatedTaskViewModel.allTasks.observe(this, Observer {
-                    tasksList = generatedTaskViewModel.allTasks.value!!
-                    if(generatedTaskList.size != tasksList.filter{it.task_list_id == session_task_list_id}.size) {
-                        if(tasksList.filter { it.task_list_id == session_task_list_id }.size == generatedTaskCount && finished_generating_tasks){
-                            generatedTaskList = tasksList.filter { it.task_list_id == session_task_list_id }
-                            for(task in generatedTaskList) addTaskView(task)
-                        }
-                    }
-                })
+                generateNewTasks()
+
+                }else{
+                    Log.d("task list not empty", tasksList.filter{ it.task_list_id == session_task_list_id - 1}.last().task_list_finished.toString())
+                    linear_layout_generated_session_init.visibility = View.VISIBLE
+                    buttonContinueUnfinishedActivities.setOnClickListener{continueGeneratedTasks()}
+                    buttonGenerateNewActivities.setOnClickListener{createNewGeneratedTasks()}
+
+                    generatedTaskViewModel.allTasks.removeObservers(this)
+                }
+
+
+
 
             // */
         })
@@ -68,6 +71,40 @@ class GeneratedTaskListActivity : AppCompatActivity() {
                 generated_task_view.seekBarGeneratedTask.visibility = View.GONE
             }
         }
+    }
+
+    private fun generateNewTasks() {
+        taskViewModel.allTasks.observe(this, Observer {
+            for (task in taskViewModel.allTasks.value!!) addGeneratedTaskToNewGeneratedList(task)
+            finished_generating_tasks = true
+        })
+        generatedTaskViewModel.allTasks.removeObservers(this)
+
+        generatedTaskViewModel.allTasks.observe(this, Observer {
+            tasksList = generatedTaskViewModel.allTasks.value!!
+            if(generatedTaskList.size != tasksList.filter{it.task_list_id == session_task_list_id}.size) {
+                if(tasksList.filter { it.task_list_id == session_task_list_id }.size == generatedTaskCount && finished_generating_tasks){
+                    generatedTaskList = tasksList.filter { it.task_list_id == session_task_list_id }
+                    for(task in generatedTaskList) addTaskView(task)
+                }
+            }
+        })
+        buttonGeneratedActivitiesFinish.visibility = View.VISIBLE
+    }
+
+    private fun continueGeneratedTasks(): View.OnClickListener? {
+        linear_layout_generated_session_init.visibility = View.GONE
+        session_task_list_id --
+        generatedTaskList = tasksList.filter { it.task_list_id == session_task_list_id }
+        for(task in generatedTaskList) addTaskView(task)
+        buttonGeneratedActivitiesFinish.visibility = View.VISIBLE
+        return null
+    }
+
+    private fun createNewGeneratedTasks(): View.OnClickListener?{
+        linear_layout_generated_session_init.visibility = View.GONE
+        generateNewTasks()
+        return null
     }
 
     private fun addGeneratedTaskToNewGeneratedList(task: Task) {
@@ -131,6 +168,17 @@ class GeneratedTaskListActivity : AppCompatActivity() {
 
         view.seekBarGeneratedTask.max = task_generated.amount_to_complete
         view.seekBarGeneratedTask.progress = task_generated.amount_completed
+        view.progressBarGeneratedTask.progress = task_generated.amount_completed
+
+        if(task_generated.amount_completed != 0) {
+            view.textViewGeneratedTaskProgressPercentage.text = ((task_generated.amount_completed * 100.0f) / task_generated.amount_to_complete).toInt().toString() + "%"
+            view.progressBarGeneratedTask.progress = task_generated.amount_completed
+        }else{
+            view.progressBarGeneratedTask.progress = 0
+            view.textViewGeneratedTaskProgressPercentage.text = "0%"
+        }
+
+
         view.textViewGeneratedTaskProgressText.text = task_generated.amount_completed.toString() + "/" + task_generated.amount_to_complete.toString()
 
         view.seekBarGeneratedTask.setOnSeekBarChangeListener(object :

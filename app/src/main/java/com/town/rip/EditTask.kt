@@ -24,9 +24,9 @@ class EditTask : AppCompatActivity() {
     lateinit var name: String
     lateinit var description: String
     lateinit var type: String
-    lateinit var unit_of_measurement: String
-     var minimum: Int = 0
-     var maximum: Int= 0
+    var unit_of_measurement: String = "minutes"
+    var minimum: Int = 0
+    var maximum: Int= 0
     var freq: Int= 0
     var enabled: Boolean = false
      var attempts:Int = 0
@@ -144,7 +144,10 @@ class EditTask : AppCompatActivity() {
 
     fun createTask(view: View) {
         var taskType = "t"
-        if (radioButtonNonMinutes.isChecked) taskType = "r"
+        if (radioButtonNonMinutes.isChecked) {
+            taskType = "r"
+            unit_of_measurement = textInputUnitOfMeasurement.text.toString()
+        }
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setMessage(message_string)
             .setTitle(title_string)
@@ -154,7 +157,7 @@ class EditTask : AppCompatActivity() {
                         textInputName.text.toString(),
                         textInputDescription.text.toString(),
                         taskType,
-                        textInputUnitOfMeasurement.text.toString(),
+                        unit_of_measurement,
                         textInputMinUnit.text.toString().toInt(),
                         textInputMaxUnit.text.toString().toInt(),
                         textViewDaysPerWeek.text.toString().toInt(),
