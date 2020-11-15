@@ -122,7 +122,7 @@ class GeneratedTaskListActivity : AppCompatActivity() {
     }
 
     private fun addGeneratedTaskToNewGeneratedList(task: Task) {
-        if((1..7).random() <= task.freq){
+        if((1..7).random() <= task.freq && task.enabled){
             generatedTaskCount ++
             Log.d("New Random Task", task.name.toString())
             var random_task = GeneratedTask(
