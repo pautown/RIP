@@ -48,7 +48,6 @@ class GeneratedTaskListActivity : AppCompatActivity() {
             if(tasksList.isEmpty() || tasksList.filter{ it.task_list_id == session_task_list_id - 1}.last().task_list_finished){ // generate new tasks if no unfinished tasks in last list
                 generatedTaskViewModel.allTasks.removeObservers(this)
                 generateNewTasks()
-
                 }else{
                     Log.d("task list not empty", tasksList.filter{ it.task_list_id == session_task_list_id - 1}.last().task_list_finished.toString())
                     linear_layout_generated_session_init.visibility = View.VISIBLE
@@ -82,10 +81,13 @@ class GeneratedTaskListActivity : AppCompatActivity() {
                 if(tasksList.filter { it.task_list_id == session_task_list_id }.size == generatedTaskCount && finished_generating_tasks){
                     generatedTaskList = tasksList.filter { it.task_list_id == session_task_list_id }
                     for(task in generatedTaskList) addTaskView(task)
+                    updateHUDStats()
                 }
             }
         })
         buttonGeneratedActivitiesFinish.visibility = View.VISIBLE
+        linearLayoutHUD.visibility = View.VISIBLE
+
     }
 
     private fun continueGeneratedTasks(): View.OnClickListener? {
@@ -94,6 +96,8 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         generatedTaskList = tasksList.filter { it.task_list_id == session_task_list_id }
         for(task in generatedTaskList) addTaskView(task)
         buttonGeneratedActivitiesFinish.visibility = View.VISIBLE
+        linearLayoutHUD.visibility = View.VISIBLE
+        updateHUDStats()
         return null
     }
 
@@ -201,14 +205,10 @@ class GeneratedTaskListActivity : AppCompatActivity() {
                 view.textViewGeneratedTaskProgressText.text = task_generated.amount_completed.toString() + "/" + task_generated.amount_to_complete.toString()
                 view.progressBarGeneratedTask.progress = view.seekBarGeneratedTask.progress
                 task_generated.amount_completed.toString() + "/" + task_generated.amount_to_complete.toString()
-                if(task_generated.amount_completed != 0) {
-                    view.textViewGeneratedTaskProgressPercentage.text = ((task_generated.amount_completed * 100.0f) / task_generated.amount_to_complete).toInt().toString() + "%"
-                    view.progressBarGeneratedTask.progress = task_generated.amount_completed
-                }
-                else{
-                    view.progressBarGeneratedTask.progress = 0
-                    view.textViewGeneratedTaskProgressPercentage.text = "0%"
-                }
+                view.textViewGeneratedTaskProgressPercentage.text = getTaskProgress(task_generated).toString() + "%"
+                view.progressBarGeneratedTask.progress = task_generated.amount_completed
+
+                updateHUDStats()
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
@@ -221,6 +221,41 @@ class GeneratedTaskListActivity : AppCompatActivity() {
 
         if (backgroundTint) view.linear_layout_generated_task.setBackgroundColor(Color.parseColor("#EEEEEE"))
         backgroundTint = !backgroundTint
+    }
+
+    private fun updateHUDStats() {
+        var totalTaskPercentage : Int = 0
+        var totalTimePercentage : Int
+        var totalTasksCompletedPercentage : Int
+        var totalTimeCompleted = 0
+        var totalTimeToComplete = 0
+        var totalTasksCompleted = 0
+        var totalTasks = generatedTaskList.size
+
+        for(task in generatedTaskList) {
+            totalTaskPercentage += getTaskProgress(task)
+            if(task.type == "t") {
+                totalTimeToComplete += task.amount_to_complete
+                totalTimeCompleted += task.amount_completed
+            }
+            if(task.amount_completed == task.amount_to_complete) totalTasksCompleted ++
+        }
+        totalTaskPercentage = ((totalTaskPercentage * 100.0f) / (generatedTaskList.size*100)).toInt()
+        totalTimePercentage = ((totalTimeCompleted * 100.0f) / totalTimeToComplete).toInt()
+        totalTasksCompletedPercentage = ((totalTasksCompleted * 100.0f) / generatedTaskList.size).toInt()
+
+        progressBarGeneratedActivitiesHUDMinutes.progress = totalTimePercentage
+        textViewGeneratedActivitiesHUDMinutes.text = "$totalTimeCompleted/$totalTimeToComplete minutes"
+        progressBarGeneratedActivitiesHUDActivities.progress = totalTasksCompletedPercentage
+        textViewGeneratedActivitiesHUDActivities.text = "$totalTasksCompleted/$totalTasks activities"
+        progressBarGeneratedActivitiesHUDCompleted.progress = totalTaskPercentage
+        textViewGeneratedActivitiesHUDCompleted.text = "$totalTaskPercentage% of list finished"
+
+    }
+
+    private fun getTaskProgress(task: GeneratedTask): Int {
+        return if(task.amount_completed == 0) 0
+        else ((task.amount_completed * 100.0f) / task.amount_to_complete).toInt()
     }
 
 }

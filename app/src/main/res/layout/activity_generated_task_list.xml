@@ -32,6 +32,111 @@
                 android:textSize="36sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/textViewGeneratedTaskListPlaceholder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-5dp"
+                android:text="Tap activity to update progress"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:visibility="visible"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutHUD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ProgressBar
+                        android:id="@+id/progressBarGeneratedActivitiesHUDMinutes"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="-5dp"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressTint="#0288D1" />
+
+                    <TextView
+                        android:id="@+id/textViewGeneratedActivitiesHUDMinutes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="40/80 minutes"
+                        android:textAlignment="center"
+                        android:textSize="12sp"
+                        android:textStyle="italic" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ProgressBar
+                        android:id="@+id/progressBarGeneratedActivitiesHUDActivities"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="-5dp"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressTint="#0288D1" />
+
+                    <TextView
+                        android:id="@+id/textViewGeneratedActivitiesHUDActivities"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="3/20 activities"
+                        android:textAlignment="center"
+                        android:textSize="12sp"
+                        android:textStyle="italic" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBarGeneratedActivitiesHUDCompleted"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="-5dp"
+                android:max="100"
+                android:progress="0"
+                android:progressTint="#0288D1" />
+
+            <TextView
+                android:id="@+id/textViewGeneratedActivitiesHUDCompleted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="17% Total Completed"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -98,16 +203,6 @@
 
                 </LinearLayout>
             </ScrollView>
-
-            <TextView
-                android:id="@+id/textViewGeneratedTaskListPlaceholder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tap a task to update progress"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                android:visibility="visible"
-                tools:visibility="visible" />
 
             <Button
                 android:id="@+id/buttonGeneratedActivitiesFinish"
