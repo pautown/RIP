@@ -114,6 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F4F0F0"
+                android:onClick="finishGeneratedTasks"
                 android:text="Finish Activities"
                 android:visibility="gone" />
 

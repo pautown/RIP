@@ -97,6 +97,15 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         return null
     }
 
+    fun finishGeneratedTasks(view:View){
+        for(task in generatedTaskList) {
+            task.task_list_finished = true
+            generatedTaskViewModel.update(task)
+        }
+        // TODO: Create view for finishing of tasks.
+        finish()
+    }
+
     private fun createNewGeneratedTasks(): View.OnClickListener?{
         for(task in tasksList.filter{ it.task_list_id == session_task_list_id - 1})
         {

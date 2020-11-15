@@ -144,6 +144,7 @@ class EditTask : AppCompatActivity() {
 
     fun createTask(view: View) {
         var taskType = "t"
+        unit_of_measurement = "minutes"
         if (radioButtonNonMinutes.isChecked) {
             taskType = "r"
             unit_of_measurement = textInputUnitOfMeasurement.text.toString()
