@@ -20,10 +20,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textViewScrrollingViewTasksSubheading"
+        android:id="@+id/textViewSubheading"
         android:layout_width="218dp"
         android:layout_height="16dp"
-        android:text="12 Total Tasks, 5 Enabled"
+        android:text="loading activities..."
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="12sp"
@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewScrrollingViewTasksSubheading">
+        app:layout_constraintTop_toBottomOf="@+id/textViewSubheading">
 
 
         <LinearLayout

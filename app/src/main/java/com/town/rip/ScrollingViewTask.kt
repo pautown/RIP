@@ -42,22 +42,39 @@ class ScrollingViewTask : AppCompatActivity() {
         taskViewModel.allTasks.removeObservers(this)
         if(!taskViewModel.allTasks.value.isNullOrEmpty()) {
             tasksList = taskViewModel.allTasks.value!!
-            for (task in taskViewModel.allTasks.value!!) addTask()
-        }
+            var enabledTasks = 0
+            for (task in taskViewModel.allTasks.value!!) {
+                if (task.enabled) enabledTasks++
+                addTask()
+                updateSubheading(taskViewModel.allTasks.value!!.size, enabledTasks)
+            }
+        }else textViewSubheading.text = "No activities created, create some!"
         taskViewModel.allTasks.observe(this, Observer {
+            var enabledTasks = 0
             if(tasksList.size != taskViewModel.allTasks.value!!.size)
             {
                 vertical_layout_view_1.removeAllViews()
                 tasksList = taskViewModel.allTasks.value!!
-                for (task in taskViewModel.allTasks.value!!) addTask()
+                for (task in tasksList) {
+                    if (task.enabled) enabledTasks++
+                    addTask()
+                }
+                updateSubheading(tasksList.size,enabledTasks)
                 updateTaskDisplays()
             }else {
                 tasksList = taskViewModel.allTasks.value!!
+                enabledTasks = 0
+                for(task in tasksList) if (task.enabled) enabledTasks++
+                updateSubheading(tasksList.size,enabledTasks)
                 for (task in tasksList) Log.d("LISTSVM", task.name.toString())
                 updateTaskDisplays()
             }
         })
 
+    }
+
+    private fun updateSubheading(totalTasks:Int , enabledTasks: Int) {
+        textViewSubheading.text = "$totalTasks total activities, $enabledTasks enabled"
     }
 
     private fun updateTaskDisplays() {
@@ -66,14 +83,14 @@ class ScrollingViewTask : AppCompatActivity() {
             val task = tasksList[i]
             view.textViewDynamicTaskName.text = task.name
             view.textViewDynamicTaskDescription.text = task.description
-            view.textViewDynamicTaskMagnitude.text = task.minimum.toString() + " to " + task.maximum.toString() + " " + task.unit_of_measurement + " per activity"
-            view.textViewDynamicTaskFrequency.text = task.freq.toString() + " days a week"
+            view.textViewDynamicTaskMagnitude.text = "${task.minimum} to ${task.maximum} ${task.unit_of_measurement} per activity"
+            view.textViewDynamicTaskFrequency.text = "${task.freq} days a week"
             view.checkBoxDynamicTaskEnabled.isChecked = task.enabled
             view.checkBoxDynamicTaskEnabled.setOnClickListener {
                 task.enabled = view.checkBoxDynamicTaskEnabled.isChecked
                 taskViewModel.update(task)
             }
-            view.buttonInfo.setOnClickListener {
+            view.dynamic_linear_layout_base_task.setOnClickListener {
                 viewTask(view)
             }
             view.buttonScrollingViewInfoEdit.setOnClickListener {
