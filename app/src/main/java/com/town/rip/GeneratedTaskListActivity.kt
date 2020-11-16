@@ -82,6 +82,7 @@ class GeneratedTaskListActivity : AppCompatActivity() {
                     generatedTaskList = tasksList.filter { it.task_list_id == session_task_list_id }
                     for(task in generatedTaskList) addTaskView(task)
                     updateHUDStats()
+                    initHUDHistorical()
                 }
             }
         })
@@ -98,7 +99,35 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         buttonGeneratedActivitiesFinish.visibility = View.VISIBLE
         linearLayoutHUD.visibility = View.VISIBLE
         updateHUDStats()
+        initHUDHistorical()
         return null
+    }
+
+    private fun initHUDHistorical() {
+        var generatedTaskListPrior = tasksList.filter { it.task_list_id == session_task_list_id - 1}
+        var totalTaskPercentage : Int = 0
+        var totalTasksCompletedPercentage : Int
+
+        if(generatedTaskListPrior.isNotEmpty()) { // get average of last session for display
+            for (task in generatedTaskListPrior) {
+                totalTaskPercentage += getTaskProgress(task)
+            }
+            totalTaskPercentage =
+                ((totalTaskPercentage * 100.0f) / (generatedTaskListPrior.size * 100)).toInt()
+
+            textViewGeneratedActivitiesHUDLast.text = "$totalTaskPercentage% last"
+        }else  textViewGeneratedActivitiesHUDLast.text = ""
+
+        if(tasksList.isNotEmpty()){ // get average of all sessions for display
+            totalTaskPercentage = 0
+            for (task in tasksList) {
+                totalTaskPercentage += getTaskProgress(task)
+            }
+            totalTaskPercentage =
+                ((totalTaskPercentage * 100.0f) / (tasksList.size * 100)).toInt()
+
+            textViewGeneratedActivitiesHUDAvg.text = "$totalTaskPercentage% avg"
+        }else textViewGeneratedActivitiesHUDAvg.text = ""
     }
 
     fun finishGeneratedTasks(view:View){
@@ -249,7 +278,7 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         progressBarGeneratedActivitiesHUDActivities.progress = totalTasksCompletedPercentage
         textViewGeneratedActivitiesHUDActivities.text = "$totalTasksCompleted/$totalTasks activities"
         progressBarGeneratedActivitiesHUDCompleted.progress = totalTaskPercentage
-        textViewGeneratedActivitiesHUDCompleted.text = "$totalTaskPercentage% of list finished"
+        textViewGeneratedActivitiesHUDCompleted.text = "$totalTaskPercentage% finished"
 
     }
 
