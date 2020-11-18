@@ -1,15 +1,22 @@
 package com.town.rip
 
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.os.AsyncTask
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Parcelable
+import android.provider.AlarmClock
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.SeekBar
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.town.rip.database.GeneratedTask
@@ -20,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_generated_task_list.*
 import kotlinx.android.synthetic.main.dynamic_generated_task.view.*
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class GeneratedTaskListActivity : AppCompatActivity() {
     private var finished_generating_tasks: Boolean = false
@@ -38,6 +46,11 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         generatedTaskViewModel = ViewModelProvider(this).get(GeneratedTaskListViewModel::class.java)
 
         setContentView(R.layout.activity_generated_task_list)
+
+
+
+
+
         generatedTaskViewModel.allTasks.observe(this, Observer {
            // /*
             //generatedTaskViewModel.deleteAll()
@@ -67,6 +80,7 @@ class GeneratedTaskListActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun generateNewTasks() {
         taskViewModel.allTasks.observe(this, Observer {
@@ -183,7 +197,9 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view: View = inflater.inflate(R.layout.dynamic_generated_task, null)
         val container = findViewById<LinearLayout>(R.id.vertical_layout_view_generated_activities)
+        var sinceLastHaptic = 0
         container.addView(view)
+        if(task_generated.type != "t") view.textViewTimer.visibility = View.GONE
 
         view.progressBarGeneratedTask.max = task_generated.amount_to_complete
         view.textViewGeneratedTaskDeskcription.text = task_generated.description
@@ -194,18 +210,53 @@ class GeneratedTaskListActivity : AppCompatActivity() {
             if(view.progressBarGeneratedTask.visibility == View.VISIBLE) {
                 for(generated_task_view in listOfGeneratedTaskViews)
                 {
+                    generated_task_view.textViewTimer.visibility = View.GONE
                     generated_task_view.progressBarGeneratedTask.visibility = View.VISIBLE
                     generated_task_view.seekBarGeneratedTask.visibility = View.GONE
                 }
                 view.progressBarGeneratedTask.visibility = View.GONE
+                if(task_generated.type == "t") view.textViewTimer.visibility = View.VISIBLE
                 view.seekBarGeneratedTask.visibility = View.VISIBLE
+
             }
             else{
+                view.textViewTimer.visibility = View.GONE
                 view.progressBarGeneratedTask.visibility = View.VISIBLE
                 view.seekBarGeneratedTask.visibility = View.GONE
             }
 
         }
+
+        if(task_generated.type == "t" && task_generated.amount_to_complete != task_generated.amount_completed)
+            view.linear_layout_generated_task.setOnLongClickListener {
+
+                val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+                builder.setMessage("Start ${(task_generated.amount_to_complete - task_generated.amount_completed)} minute timer for ${task_generated.name}?")
+                    .setTitle("Timer?")
+                    .setPositiveButton("Confirm", DialogInterface.OnClickListener { dialog, id ->
+                        Toast.makeText(
+                            this,
+                            "${(task_generated.amount_to_complete - task_generated.amount_completed)} minute timer for ${task_generated.name} started ",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        startTimer(
+                            task_generated.name,
+                            (task_generated.amount_to_complete - task_generated.amount_completed) * 60
+                        )
+                    })
+                    .setNegativeButton("No",
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // CANCEL
+                        })
+
+                val alert = builder.create()
+                alert.show()
+
+
+
+                true
+            }
+
         listOfGeneratedTaskViews.add(view)
         view.textViewGeneratedTaskProgressUnitOfMeasure.text = task_generated.unit_of_measurement
 
@@ -230,6 +281,16 @@ class GeneratedTaskListActivity : AppCompatActivity() {
                 seek: SeekBar,
                 progress: Int, fromUser: Boolean
             ) {
+                var performHapticBool = false
+                if(view.seekBarGeneratedTask.progress > task_generated.amount_completed && view.seekBarGeneratedTask.max < 10) performHapticBool = true
+                else if (view.seekBarGeneratedTask.progress > task_generated.amount_completed && view.seekBarGeneratedTask.progress >= sinceLastHaptic + view.seekBarGeneratedTask.max/7)
+                {
+                    performHapticBool = true
+                    sinceLastHaptic = view.seekBarGeneratedTask.progress
+                }
+                if(view.seekBarGeneratedTask.progress <= sinceLastHaptic - view.seekBarGeneratedTask.max/7) sinceLastHaptic = view.seekBarGeneratedTask.progress
+                if (performHapticBool) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+
                 task_generated.amount_completed = view.seekBarGeneratedTask.progress
                 view.textViewGeneratedTaskProgressText.text = task_generated.amount_completed.toString() + "/" + task_generated.amount_to_complete.toString()
                 view.progressBarGeneratedTask.progress = view.seekBarGeneratedTask.progress
@@ -251,6 +312,34 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         if (backgroundTint) view.linear_layout_generated_task.setBackgroundColor(Color.parseColor("#EEEEEE"))
         backgroundTint = !backgroundTint
     }
+
+    private fun startTimer(message: String, seconds: Int) {
+        "com.android.alarm.permission.SET_ALARM"
+        val intent = Intent(AlarmClock.ACTION_SET_TIMER)
+
+        val targetIntents: MutableList<Intent> = ArrayList()
+        val packages =
+            this.packageManager.queryIntentActivities(intent, 0)
+
+        for (candidate in packages) {
+            val packageName = candidate.activityInfo.packageName
+            if (packageName != "com.town.rip") { //GooglePlus Package name
+                val target = Intent(AlarmClock.ACTION_SET_TIMER)
+                target.putExtra(AlarmClock.EXTRA_MESSAGE, message)
+                target.putExtra(AlarmClock.EXTRA_LENGTH, seconds)
+                target.putExtra(AlarmClock.EXTRA_SKIP_UI, true)
+                target.setPackage(packageName)
+                targetIntents.add(target)
+            }
+        }
+        val chooserIntent = Intent.createChooser(targetIntents.removeAt(0), "Share.")
+        chooserIntent.putExtra(
+            Intent.EXTRA_INITIAL_INTENTS,
+            targetIntents.toTypedArray()
+        )
+        startActivity(chooserIntent)
+    }
+
 
     private fun updateHUDStats() {
         var totalTaskPercentage : Int = 0
