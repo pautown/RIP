@@ -7,28 +7,35 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.town.rip.database.Profile
+import com.town.rip.database.ProfileViewModel
 import com.town.rip.database.Task
 import com.town.rip.database.TaskViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var taskViewModel: TaskViewModel
+    private lateinit var profileViewModel: ProfileViewModel
+
     private lateinit var tasksList: List<Task>
+    private var profileList: List<Profile> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         setContentView(R.layout.activity_main)
         taskViewModel.allTasks.observe(this, Observer { tasks ->
             tasks?.let { taskViewModel.repository.allTasks }
         })
+        profileViewModel.allProfiles.observe(this, Observer {
+            profileList = profileViewModel.allProfiles.value!!
+            if(profileList.isNotEmpty()) textViewProfile.text = "Current Profile: " + profileList.filter{ it.selected }.last().name.toString()
+            else textViewProfile.text = "Current Profile: default"
+        })
 
-        val filename = "myfile"
-        val fileContents = "Hello world!"
-        openFileOutput(filename, Context.MODE_PRIVATE).use {
-            it.write(fileContents.toByteArray())
-        }
     }
 
     fun viewTasks(view: View) {

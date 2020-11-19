@@ -48,11 +48,7 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_generated_task_list)
 
 
-
-
-
         generatedTaskViewModel.allTasks.observe(this, Observer {
-           // /*
             //generatedTaskViewModel.deleteAll()
                 tasksList = generatedTaskViewModel.allTasks.value!!
                 if(tasksList.isNotEmpty()) session_task_list_id = tasksList.last().task_list_id.toInt() + 1
@@ -69,7 +65,6 @@ class GeneratedTaskListActivity : AppCompatActivity() {
 
                     generatedTaskViewModel.allTasks.removeObservers(this)
                 }
-            // */
         })
 
         vertical_layout_view_generated_activities.setOnClickListener{
