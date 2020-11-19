@@ -51,8 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -82,7 +81,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:text="40/80 minutes"
+                        android:text="loading..."
                         android:textAlignment="textStart"
                         android:textSize="14sp"
                         android:textStyle="italic" />
@@ -112,7 +111,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:text="3/20 activities"
+                        android:text="loading..."
                         android:textAlignment="textStart"
                         android:textSize="14sp"
                         android:textStyle="italic" />
@@ -129,7 +128,6 @@
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="-5dp"
                 android:max="100"
-                android:progress="20"
                 android:progressTint="#0288D1" />
 
             <LinearLayout
@@ -143,7 +141,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:text="17% total completed"
+                    android:text="loading..."
                     android:textAlignment="viewStart"
                     android:textSize="14sp"
                     android:textStyle="italic" />
@@ -155,7 +153,7 @@
                     android:layout_marginEnd="10dp"
                     android:layout_weight="1"
                     android:alpha="0.8"
-                    android:text="64% prior"
+                    android:text="loading..."
                     android:textAlignment="textEnd"
                     android:textSize="12sp"
                     android:textStyle="italic" />
@@ -166,7 +164,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:alpha="0.8"
-                    android:text="84% avg"
+                    android:text="loading..."
                     android:textAlignment="textEnd"
                     android:textSize="12sp"
                     android:textStyle="italic" />
@@ -180,6 +178,21 @@
                 android:layout_weight="1"
                 android:background="?android:attr/listDivider" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutLoadingActivities"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="loading activities..." />
         </LinearLayout>
 
         <LinearLayout

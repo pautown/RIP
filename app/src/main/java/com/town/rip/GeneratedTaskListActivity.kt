@@ -53,18 +53,12 @@ class GeneratedTaskListActivity : AppCompatActivity() {
                 tasksList = generatedTaskViewModel.allTasks.value!!
                 if(tasksList.isNotEmpty()) session_task_list_id = tasksList.last().task_list_id.toInt() + 1
             Log.d("task list id", session_task_list_id.toString())
-
-            if(tasksList.isEmpty() || tasksList.filter{ it.task_list_id == session_task_list_id - 1}.last().task_list_finished){ // generate new tasks if no unfinished tasks in last list
-                generatedTaskViewModel.allTasks.removeObservers(this)
+            generatedTaskViewModel.allTasks.removeObservers(this)
+            layoutLoadingActivities.visibility = View.GONE
+            if(tasksList.isEmpty() || tasksList.filter{ it.task_list_id == session_task_list_id - 1}.last().task_list_finished) // generate new tasks if no unfinished tasks in last list
                 generateNewTasks()
-                }else{
-                    Log.d("task list not empty", tasksList.filter{ it.task_list_id == session_task_list_id - 1}.last().task_list_finished.toString())
-                    linear_layout_generated_session_init.visibility = View.VISIBLE
-                    buttonContinueUnfinishedActivities.setOnClickListener{continueGeneratedTasks()}
-                    buttonGenerateNewActivities.setOnClickListener{createNewGeneratedTasks()}
-
-                    generatedTaskViewModel.allTasks.removeObservers(this)
-                }
+                else
+                continueGeneratedTasks()
         })
 
         vertical_layout_view_generated_activities.setOnClickListener{
