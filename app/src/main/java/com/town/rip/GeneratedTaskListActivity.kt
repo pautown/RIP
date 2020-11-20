@@ -19,10 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.town.rip.database.GeneratedTask
-import com.town.rip.database.GeneratedTaskListViewModel
-import com.town.rip.database.Task
-import com.town.rip.database.TaskViewModel
+import com.town.rip.database.*
 import kotlinx.android.synthetic.main.activity_generated_task_list.*
 import kotlinx.android.synthetic.main.dynamic_generated_task.view.*
 import java.text.SimpleDateFormat
@@ -33,6 +30,8 @@ class GeneratedTaskListActivity : AppCompatActivity() {
     private var finished_generating_tasks: Boolean = false
     private lateinit var taskViewModel : TaskViewModel
     private lateinit var generatedTaskViewModel : GeneratedTaskListViewModel
+    private lateinit var profileViewModel: ProfileViewModel
+    private var profileList: List<Profile> = listOf()
     private var session_task_list_id: Int = 0
     private var tasksList: List<GeneratedTask> = listOf()
     private var backgroundTint : Boolean = false;
@@ -47,18 +46,24 @@ class GeneratedTaskListActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_generated_task_list)
 
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
-        generatedTaskViewModel.allTasks.observe(this, Observer {
-            //generatedTaskViewModel.deleteAll()
-                tasksList = generatedTaskViewModel.allTasks.value!!
-                if(tasksList.isNotEmpty()) session_task_list_id = tasksList.last().task_list_id.toInt() + 1
-            Log.d("task list id", session_task_list_id.toString())
-            generatedTaskViewModel.allTasks.removeObservers(this)
-            layoutLoadingActivities.visibility = View.GONE
-            if(tasksList.isEmpty() || tasksList.filter{ it.task_list_id == session_task_list_id - 1}.last().task_list_finished) // generate new tasks if no unfinished tasks in last list
-                generateNewTasks()
-                else
-                continueGeneratedTasks()
+        profileViewModel.allProfiles.observe(this, Observer {
+            profileList = profileViewModel.allProfiles.value!!
+            profileViewModel.allProfiles.removeObservers(this)
+
+            generatedTaskViewModel.allTasks.observe(this, Observer {
+                //generatedTaskViewModel.deleteAll()
+                    tasksList = generatedTaskViewModel.allTasks.value!!
+                    if(tasksList.isNotEmpty()) session_task_list_id = tasksList.last().task_list_id.toInt() + 1
+                Log.d("task list id", session_task_list_id.toString())
+                generatedTaskViewModel.allTasks.removeObservers(this)
+                layoutLoadingActivities.visibility = View.GONE
+                if(tasksList.isEmpty() || tasksList.filter{ it.task_list_id == session_task_list_id - 1}.last().task_list_finished) // generate new tasks if no unfinished tasks in last list
+                    generateNewTasks()
+                    else
+                    continueGeneratedTasks()
+            })
         })
 
         vertical_layout_view_generated_activities.setOnClickListener{
@@ -165,7 +170,10 @@ class GeneratedTaskListActivity : AppCompatActivity() {
                 SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
                 (task.minimum..task.maximum).random(),
                 session_task_list_id,
-                task.id
+                task.id,
+                false,
+                0,
+                profileList.filter{ it.selected }.last().id
             )
             putTask(random_task)
         }

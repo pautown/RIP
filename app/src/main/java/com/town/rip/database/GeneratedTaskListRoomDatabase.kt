@@ -4,12 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(GeneratedTask::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(GeneratedTask::class), version = 2, exportSchema = false)
 abstract class GeneratedTaskListRoomDatabase : RoomDatabase() {
 
     abstract fun generatedTaskListDao(): GeneratedTaskListDao
@@ -37,6 +38,12 @@ abstract class GeneratedTaskListRoomDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: GeneratedTaskListRoomDatabase? = null
 
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE generated_task_list_table ADD COLUMN profile_id INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
         fun getDatabase(
             context: Context,
             scope: CoroutineScope
@@ -55,9 +62,9 @@ abstract class GeneratedTaskListRoomDatabase : RoomDatabase() {
                     GeneratedTaskListDatabaseCallback(
                         scope
                     )
-                )
-                    .fallbackToDestructiveMigration()
+                ).addMigrations(GeneratedTaskListRoomDatabase.MIGRATION_1_2)
                     .build()
+
                 INSTANCE = instance
                 return instance
             }

@@ -14,7 +14,8 @@ class GeneratedTask (
     var task_list_id: Int,
     var task_id: Int,
     var task_list_finished: Boolean = false,
-    var amount_completed: Int = 0
+    var amount_completed: Int = 0,
+    var profile_id: Int
 ){
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
