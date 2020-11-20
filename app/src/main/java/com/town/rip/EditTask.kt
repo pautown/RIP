@@ -10,15 +10,21 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.town.rip.database.Profile
+import com.town.rip.database.ProfileViewModel
 import com.town.rip.database.Task
 import com.town.rip.database.TaskViewModel
 import kotlinx.android.synthetic.main.activity_edit.*
+import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class EditTask : AppCompatActivity() {
     private lateinit var taskViewModel: TaskViewModel
+    private lateinit var profileViewModel: ProfileViewModel
+    private var profileList: List<Profile> = listOf()
+
     private var editMode:Boolean = false
 
     lateinit var name: String
@@ -52,6 +58,10 @@ class EditTask : AppCompatActivity() {
 
 
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        profileViewModel.allProfiles.observe(this, Observer {
+            profileList = profileViewModel.allProfiles.value!!
+        })
         setContentView(R.layout.activity_edit)
         taskViewModel.allTasks.observe(this, Observer { tasks ->
             tasks?.let { taskViewModel.repository.allTasks }
@@ -104,7 +114,6 @@ class EditTask : AppCompatActivity() {
 
             override fun onStopTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is stopped
-
             }
         })
 
@@ -168,7 +177,8 @@ class EditTask : AppCompatActivity() {
                         0,
                         0,
                         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
-                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+                        profileList.filter{ it.selected }.last().id
                     )
 
                     if (editMode) {

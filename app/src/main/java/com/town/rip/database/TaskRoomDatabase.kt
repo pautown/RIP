@@ -4,12 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(Task::class), version = 2, exportSchema = false)
+@Database(entities = arrayOf(Task::class), version = 3, exportSchema = false)
 abstract class TaskRoomDatabase : RoomDatabase() {
 
     abstract fun taskDao(): TaskDao
@@ -37,6 +38,12 @@ abstract class TaskRoomDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: TaskRoomDatabase? = null
 
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE task_table ADD COLUMN profile_id INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
         fun getDatabase(
             context: Context,
             scope: CoroutineScope
@@ -56,8 +63,7 @@ abstract class TaskRoomDatabase : RoomDatabase() {
                         scope
                     )
                 )
-                    .fallbackToDestructiveMigration()
-                 .build()
+                 .addMigrations(MIGRATION_2_3).build()
                 INSTANCE = instance
                 return instance
             }
