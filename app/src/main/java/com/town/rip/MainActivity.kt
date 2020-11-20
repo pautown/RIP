@@ -1,9 +1,9 @@
 package com.town.rip
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var tasksList: List<Task>
     private var profileList: List<Profile> = listOf()
+    private var mutableProfileList: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -32,8 +33,15 @@ class MainActivity : AppCompatActivity() {
         })
         profileViewModel.allProfiles.observe(this, Observer {
             profileList = profileViewModel.allProfiles.value!!
-            if(profileList.isNotEmpty()) textViewProfile.text = "Current Profile: " + profileList.filter{ it.selected }.last().name.toString()
-            else textViewProfile.text = "Current Profile: default"
+            for(profile in profileList) mutableProfileList.add(profile.name)
+            mutableProfileList.add("create new profile")
+            var adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+                applicationContext,
+                android.R.layout.simple_spinner_item, mutableProfileList
+            )
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+
         })
 
     }
