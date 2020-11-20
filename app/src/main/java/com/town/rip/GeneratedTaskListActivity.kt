@@ -128,11 +128,11 @@ class GeneratedTaskListActivity : AppCompatActivity() {
 
         if(tasksList.isNotEmpty()){ // get average of all sessions for display
             totalTaskPercentage = 0
-            for (task in tasksList) {
+            for (task in tasksList.filter { it.task_list_id != session_task_list_id}) {
                 totalTaskPercentage += getTaskProgress(task)
             }
             totalTaskPercentage =
-                ((totalTaskPercentage * 100.0f) / (tasksList.size * 100)).toInt()
+                ((totalTaskPercentage * 100.0f) / (tasksList.filter { it.task_list_id != session_task_list_id}.size * 100)).toInt()
 
             textViewGeneratedActivitiesHUDAvg.text = "$totalTaskPercentage% avg"
         }else textViewGeneratedActivitiesHUDAvg.text = ""
@@ -311,16 +311,16 @@ class GeneratedTaskListActivity : AppCompatActivity() {
     }
 
     private fun startTimer(message: String, seconds: Int) {
-        "com.android.alarm.permission.SET_ALARM"
         val intent = Intent(AlarmClock.ACTION_SET_TIMER)
 
         val targetIntents: MutableList<Intent> = ArrayList()
         val packages =
             this.packageManager.queryIntentActivities(intent, 0)
-
+        // get all possible apps for timer intent (usually just timer), then remove RIP from possible choices
+        // this removes the extra "choose app to launch" intent pop-up that occurs without filtering RIP
         for (candidate in packages) {
             val packageName = candidate.activityInfo.packageName
-            if (packageName != "com.town.rip") { //GooglePlus Package name
+            if (packageName != "com.town.rip") {
                 val target = Intent(AlarmClock.ACTION_SET_TIMER)
                 target.putExtra(AlarmClock.EXTRA_MESSAGE, message)
                 target.putExtra(AlarmClock.EXTRA_LENGTH, seconds)
@@ -349,11 +349,11 @@ class GeneratedTaskListActivity : AppCompatActivity() {
 
         for(task in generatedTaskList) {
             totalTaskPercentage += getTaskProgress(task)
-            if(task.type == "t") {
+            if (task.type == "t") {
                 totalTimeToComplete += task.amount_to_complete
                 totalTimeCompleted += task.amount_completed
             }
-            if(task.amount_completed == task.amount_to_complete) totalTasksCompleted ++
+            if (task.amount_completed == task.amount_to_complete) totalTasksCompleted++
         }
         totalTaskPercentage = ((totalTaskPercentage * 100.0f) / (generatedTaskList.size*100)).toInt()
         totalTimePercentage = ((totalTimeCompleted * 100.0f) / totalTimeToComplete).toInt()
