@@ -48,15 +48,14 @@ class MainActivity : AppCompatActivity() {
             rebuildMutableProfileList()
 
 
-
-            if(profileList.filter { it.selected }.isEmpty())
-            {
+        if(profileList.isNotEmpty()) {
+            if (profileList.filter { it.selected }.isEmpty()) {
                 var profile = profileList.first()
                 profile.selected = true
                 profileViewModel.update(profile)
             }
             buttonProfile.text = "Profile: ${profileList.last { it.selected }.name}"
-
+        }
 
         })
 

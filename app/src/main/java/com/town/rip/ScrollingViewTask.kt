@@ -1,6 +1,7 @@
 package com.town.rip
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -8,6 +9,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.lifecycle.Observer
@@ -15,12 +18,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.town.rip.database.Task
 import com.town.rip.database.TaskViewModel
 import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
+import kotlinx.android.synthetic.main.dynamic_generated_task.view.*
 import kotlinx.android.synthetic.main.dynamic_linear_layout_task.view.*
 
 
 class ScrollingViewTask : AppCompatActivity() {
     private lateinit var taskViewModel : TaskViewModel
     private var tasksList: List<Task> = listOf()
+
+    private var tasksListViews: MutableList<View> = mutableListOf()
 
     private var backgroundTint : Boolean = false;
 
@@ -74,7 +80,7 @@ class ScrollingViewTask : AppCompatActivity() {
     }
 
     private fun updateSubheading(totalTasks:Int , enabledTasks: Int) {
-        textViewSubheading.text = "$totalTasks total activities, $enabledTasks enabled"
+        textViewSubheading.text = "hold activity to toggle enable/disable\n$totalTasks total activities, $enabledTasks enabled"
     }
 
     private fun updateTaskDisplays() {
@@ -85,17 +91,27 @@ class ScrollingViewTask : AppCompatActivity() {
             view.textViewDynamicTaskDescription.text = task.description
             view.textViewDynamicTaskMagnitude.text = "${task.minimum} to ${task.maximum} ${task.unit_of_measurement} per activity"
             view.textViewDynamicTaskFrequency.text = "${task.freq} days a week"
-            view.checkBoxDynamicTaskEnabled.isChecked = task.enabled
-            view.checkBoxDynamicTaskEnabled.setOnClickListener {
-                task.enabled = view.checkBoxDynamicTaskEnabled.isChecked
+            if(task.enabled) view.textViewEnabled.text = "(enabled)"
+            else view.textViewEnabled.text = "(disabled)"
+            view.dynamic_linear_layout_base_task.setOnLongClickListener {
+                task.enabled = !task.enabled
+                if(task.enabled) view.textViewEnabled.text = "(enabled)"
+                else view.textViewEnabled.text = "(disabled)"
                 taskViewModel.update(task)
+                true
             }
+
             view.dynamic_linear_layout_base_task.setOnClickListener {
+                viewTask(view)
+            }
+            view.textViewEnabled.setOnClickListener{
                 viewTask(view)
             }
             view.buttonScrollingViewInfoEdit.setOnClickListener {
                 startActivity(launchEditScreen(this, task))
             }
+
+            tasksListViews.add(view)
         }
     }
 
@@ -130,6 +146,7 @@ class ScrollingViewTask : AppCompatActivity() {
         return intent
     }
     private fun viewTask(view: View) {
+        for(viewList in tasksListViews) if(viewList != view) viewList.linearLayoutInfo.visibility = View.GONE
         if (view.linearLayoutInfo.visibility == View.VISIBLE) view.linearLayoutInfo.visibility = View.GONE
         else view.linearLayoutInfo.visibility = View.VISIBLE
     }

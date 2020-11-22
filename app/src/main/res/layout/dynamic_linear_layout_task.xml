@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="5dp"
@@ -13,31 +14,34 @@
         android:layout_height="match_parent"
         android:baselineAligned="false"
         android:clipToPadding="false"
+        android:foreground="?android:attr/selectableItemBackground"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+        <TextView
+            android:id="@+id/textViewDynamicTaskName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:clickable="false"
             android:duplicateParentState="true"
+            android:gravity="center_vertical"
+            android:text="Eat Eggs"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            android:foreground="?android:attr/selectableItemBackground"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/textViewDynamicTaskName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:duplicateParentState="true"
-                android:gravity="center_vertical"
-                android:text="Eat Eggs"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/textViewEnabled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="false"
+            android:duplicateParentState="true"
+            android:text="(enabled)"
+            android:textAlignment="viewEnd" />
 
     </LinearLayout>
 
@@ -46,7 +50,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <View
 
@@ -76,15 +81,24 @@
             android:textSize="14sp"
             android:textStyle="italic" />
 
-        <TextView
-
-            android:id="@+id/textViewDynamicTaskFrequency"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="6 days a week"
-            android:textSize="14sp"
-            android:textStyle="italic" />
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:id="@+id/textViewDynamicTaskFrequency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="6 days a week"
+                android:textSize="14sp"
+                android:textStyle="italic" />
+
+        </LinearLayout>
 
         <View
 
@@ -104,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -117,7 +131,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Completion Rate:"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -125,14 +139,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Generation Rate:"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Average Completion:"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -164,7 +178,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="42%"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="italic" />
                     </LinearLayout>
 
@@ -191,7 +205,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="86%"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="italic" />
                     </LinearLayout>
 
@@ -218,54 +232,68 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="66%"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="italic" />
                     </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
+            <View
+                android:id="@+id/divider5"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Profiles"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
+            <View
+                android:id="@+id/divider6"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="?android:attr/listDivider" />
 
-                <CheckBox
-                    android:id="@+id/checkBoxDynamicTaskEnabled"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text="Enabled" />
+            <LinearLayout
+                android:id="@+id/linearLayoutProfiles"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"></LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/buttonScrollingViewInfoEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#FCFCFC"
-                        android:elegantTextHeight="true"
-                        android:text="Edit "
-                        android:textAlignment="center"
-                        android:textColor="#000000"
-                        android:textIsSelectable="false"
-                        android:textStyle="normal" />
-                </LinearLayout>
-
-            </LinearLayout>
+            <Button
+                android:id="@+id/buttonScrollingViewInfoEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="#FCFCFC"
+                android:elegantTextHeight="true"
+                android:text="Edit "
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textIsSelectable="false"
+                android:textStyle="normal" />
 
             <View
 
                 android:id="@+id/view"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_margin="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:background="?android:attr/listDivider" />
 
         </LinearLayout>

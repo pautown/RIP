@@ -19,7 +19,8 @@ class Task(
     var total_completed: Int,
     var creation_date: String,
     var update_date: String,
-    var profile_id: Int
+    var profile_id: Int,
+    var profile_ids: List<Int> = emptyList()
 ){
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
