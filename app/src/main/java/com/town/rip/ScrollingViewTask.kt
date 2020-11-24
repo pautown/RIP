@@ -15,15 +15,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.town.rip.database.ProfileViewModel
 import com.town.rip.database.Task
 import com.town.rip.database.TaskViewModel
 import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
 import kotlinx.android.synthetic.main.dynamic_generated_task.view.*
 import kotlinx.android.synthetic.main.dynamic_linear_layout_task.view.*
+import kotlinx.android.synthetic.main.dynamic_view_profile.view.*
 
 
 class ScrollingViewTask : AppCompatActivity() {
     private lateinit var taskViewModel : TaskViewModel
+    private lateinit var profileViewModel : ProfileViewModel
+
     private var tasksList: List<Task> = listOf()
 
     private var tasksListViews: MutableList<View> = mutableListOf()
@@ -35,10 +39,17 @@ class ScrollingViewTask : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         setContentView(R.layout.activity_scrolling_view_tasks)
-        taskViewModel.allTasks.observe(this, Observer {
-            loadTasks()
+        profileViewModel.allProfiles.observe(this, Observer {tasks ->
+                tasks?.let { profileViewModel.repository.allProfiles }
+            Log.d("profiles", profileViewModel.allProfiles.value!!.size.toString())
+            profileViewModel.allProfiles.removeObservers(this)
+            taskViewModel.allTasks.observe(this, Observer {
+                loadTasks()
+            })
         })
+
 
     }
 
@@ -54,6 +65,7 @@ class ScrollingViewTask : AppCompatActivity() {
                 addTask()
                 updateSubheading(taskViewModel.allTasks.value!!.size, enabledTasks)
             }
+            updateTaskDisplays()
         }else textViewSubheading.text = "No activities created, create some!"
         taskViewModel.allTasks.observe(this, Observer {
             var enabledTasks = 0
@@ -67,7 +79,7 @@ class ScrollingViewTask : AppCompatActivity() {
                 }
                 updateSubheading(tasksList.size,enabledTasks)
                 updateTaskDisplays()
-            }else {
+            }else if(!viewEnabledEqualsRepositoryEnabled()){
                 tasksList = taskViewModel.allTasks.value!!
                 enabledTasks = 0
                 for(task in tasksList) if (task.enabled) enabledTasks++
@@ -77,6 +89,14 @@ class ScrollingViewTask : AppCompatActivity() {
             }
         })
 
+    }
+
+    private fun viewEnabledEqualsRepositoryEnabled(): Boolean {
+        var returnBool = true
+        for ((i, task) in tasksList.withIndex())
+            if(tasksList[i].enabled !=  taskViewModel.allTasks.value!![i].enabled)
+                returnBool = false
+        return  returnBool
     }
 
     private fun updateSubheading(totalTasks:Int , enabledTasks: Int) {
@@ -112,6 +132,32 @@ class ScrollingViewTask : AppCompatActivity() {
             }
 
             tasksListViews.add(view)
+            for(profile in profileViewModel.allProfiles.value!!)
+            {
+
+                val inflaterProfile = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewProfile: View = inflaterProfile.inflate(R.layout.dynamic_view_profile, null)
+                val container = view.layoutProfiles
+                container.addView(viewProfile)
+
+                viewProfile.checkBox.text = profile.name
+                viewProfile.checkBox.isChecked = task.profile_ids.contains(profile.id)
+                viewProfile.checkBox.isEnabled = profile.id != task.profile_id
+                viewProfile.checkBox.setOnClickListener{
+                    var profile_ids_temp = task.profile_ids.toMutableList()
+                    if(viewProfile.checkBox.isChecked && !task.profile_ids.contains(profile.id))
+                        profile_ids_temp.add(profile.id)
+                    else if (!viewProfile.checkBox.isChecked && task.profile_ids.contains(profile.id)){
+                        for ((i, id) in profile_ids_temp.withIndex()) {
+                            if (id == profile.id) profile_ids_temp.removeAt(i)
+                            break
+                        }
+                    }
+                    task.profile_ids = profile_ids_temp
+                    taskViewModel.update(task)
+                }
+            }
+
         }
     }
 
