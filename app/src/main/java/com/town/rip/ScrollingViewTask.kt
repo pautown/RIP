@@ -125,6 +125,7 @@ class ScrollingViewTask : AppCompatActivity() {
                 viewTask(view)
             }
             view.buttonScrollingViewInfoEdit.setOnClickListener {
+                view.linearLayoutInfo.visibility = View.GONE
                 startActivity(launchEditScreen(this, task))
             }
 

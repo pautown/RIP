@@ -46,18 +46,13 @@ class EditTask : AppCompatActivity() {
     var task_id:Int = 0
 
     var message_string = "Save the new activity and return to the previous screen?"
-    var title_string = "Add Activity?"
+    var title_string = "Add Activity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val intentExtras = intent.extras
         if (intentExtras?.getInt("ID") != null) editMode = true
-
-
-
-
-
 
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
@@ -73,7 +68,7 @@ class EditTask : AppCompatActivity() {
         if(editMode)
         {
             message_string = "Modify the existing activity and return to the previous screen?"
-            title_string = "Edit Activity?"
+            title_string = "Edit Activity"
 
             task_id = intentExtras!!.getInt("ID")
             textViewEditActivityHeader.text = "Edit Activity"
@@ -143,6 +138,23 @@ class EditTask : AppCompatActivity() {
             .setPositiveButton("Delete Activity?",
                 DialogInterface.OnClickListener { dialog, id ->
                     taskViewModel.delete(taskViewModel.allTasks.value!!.find{ it.id == task_id}!!)
+                    finish() // return to previous screen
+                })
+            .setNegativeButton("No",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // CANCEL
+                })
+
+        val alert = builder.create()
+        alert.show()
+    }
+
+    fun cancelTask(view:View){
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setMessage("Return to prior screen?")
+            .setTitle(title_string)
+            .setPositiveButton("Confirm",
+                DialogInterface.OnClickListener { dialog, id ->
                     finish() // return to previous screen
                 })
             .setNegativeButton("No",
