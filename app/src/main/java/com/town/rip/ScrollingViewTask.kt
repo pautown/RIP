@@ -1,7 +1,6 @@
 package com.town.rip
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -9,8 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.lifecycle.Observer
@@ -19,9 +16,9 @@ import com.town.rip.database.ProfileViewModel
 import com.town.rip.database.Task
 import com.town.rip.database.TaskViewModel
 import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
-import kotlinx.android.synthetic.main.dynamic_generated_task.view.*
 import kotlinx.android.synthetic.main.dynamic_linear_layout_task.view.*
 import kotlinx.android.synthetic.main.dynamic_view_profile.view.*
+import com.google.gson.Gson
 
 
 class ScrollingViewTask : AppCompatActivity() {
@@ -188,6 +185,7 @@ class ScrollingViewTask : AppCompatActivity() {
         bundle.putSerializable("TOTAL_COMPLETED", task.total_completed)
         bundle.putSerializable("CREATION_DATE", task.creation_date)
         bundle.putSerializable("UPDATE_DATE", task.update_date)
+        bundle.putIntegerArrayList("ID_LIST", ArrayList(task.profile_ids))
         intent.putExtras(bundle)
         return intent
     }

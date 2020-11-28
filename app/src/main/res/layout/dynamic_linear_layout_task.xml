@@ -255,7 +255,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="Profiles"
+                android:text="Active/Not Active for Profiles:"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -284,6 +284,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:backgroundTint="#FCFCFC"
                 android:elegantTextHeight="true"

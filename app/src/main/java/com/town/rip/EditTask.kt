@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,7 @@ import java.util.*
 
 
 class EditTask : AppCompatActivity() {
+    private lateinit var taskIDList: MutableList<Int>
     private lateinit var taskViewModel: TaskViewModel
     private lateinit var profileViewModel: ProfileViewModel
     private var profileList: List<Profile> = listOf()
@@ -61,6 +63,7 @@ class EditTask : AppCompatActivity() {
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         profileViewModel.allProfiles.observe(this, Observer {
             profileList = profileViewModel.allProfiles.value!!
+            if(!editMode) taskIDList = listOf(profileList.last{ it.selected }.id).toMutableList()
         })
         setContentView(R.layout.activity_edit)
         taskViewModel.allTasks.observe(this, Observer { tasks ->
@@ -82,7 +85,8 @@ class EditTask : AppCompatActivity() {
             minimum  = intentExtras!!.getInt("MIN")
             maximum = intentExtras!!.getInt("MAX")
             freq = intentExtras!!.getInt("FREQ")
-
+            taskIDList = intentExtras!!.getIntegerArrayList("ID_LIST")!!.toMutableList()
+            Log.d("taskIDList", taskIDList.first().toString())
 
             textInputName.setText(name)
             textInputDescription.setText(description)
@@ -178,7 +182,8 @@ class EditTask : AppCompatActivity() {
                         0,
                         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
                         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
-                        profileList.filter{ it.selected }.last().id
+                        profileList.last{ it.selected }.id,
+                        taskIDList
                     )
 
                     if (editMode) {
