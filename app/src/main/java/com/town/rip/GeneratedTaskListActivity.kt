@@ -27,6 +27,8 @@ import java.util.*
 
 
 class GeneratedTaskListActivity : AppCompatActivity() {
+    private var profileID: Int = 0
+    private var profileGeneratedTasks: List<GeneratedTask> = listOf()
     private var finished_generating_tasks: Boolean = false
     private lateinit var taskViewModel : TaskViewModel
     private lateinit var generatedTaskViewModel : GeneratedTaskListViewModel
@@ -54,15 +56,20 @@ class GeneratedTaskListActivity : AppCompatActivity() {
 
             generatedTaskViewModel.allTasks.observe(this, Observer {
                 //generatedTaskViewModel.deleteAll()
-                    tasksList = generatedTaskViewModel.allTasks.value!!
-                    if(tasksList.isNotEmpty()) session_task_list_id = tasksList.last().task_list_id.toInt() + 1
-                Log.d("task list id", session_task_list_id.toString())
+                tasksList = generatedTaskViewModel.allTasks.value!!
+                if(tasksList.isNotEmpty()) session_task_list_id = tasksList.last().task_list_id.toInt() + 1
+
                 generatedTaskViewModel.allTasks.removeObservers(this)
                 layoutLoadingActivities.visibility = View.GONE
-                if(tasksList.isEmpty() || tasksList.filter{ it.task_list_id == session_task_list_id - 1}.last().task_list_finished) // generate new tasks if no unfinished tasks in last list
+
+                profileID = profileList.last{ it.selected }.id
+                profileGeneratedTasks = tasksList.filter{it.profile_id == profileID}
+
+                if(profileGeneratedTasks.isEmpty() || profileGeneratedTasks.last().task_list_finished) // generate new tasks if no unfinished tasks in last list
                     generateNewTasks()
                     else
                     continueGeneratedTasks()
+                Log.d("task list id", session_task_list_id.toString())
             })
         })
 
@@ -78,16 +85,19 @@ class GeneratedTaskListActivity : AppCompatActivity() {
 
     private fun generateNewTasks() {
         taskViewModel.allTasks.observe(this, Observer {
-            for (task in taskViewModel.allTasks.value!!) addGeneratedTaskToNewGeneratedList(task)
+            for (task in taskViewModel.allTasks.value!!)
+                if(task.profile_ids.contains(profileID))
+                    addGeneratedTaskToNewGeneratedList(task)
             finished_generating_tasks = true
         })
         generatedTaskViewModel.allTasks.removeObservers(this)
 
         generatedTaskViewModel.allTasks.observe(this, Observer {
             tasksList = generatedTaskViewModel.allTasks.value!!
-            if(generatedTaskList.size != tasksList.filter{it.task_list_id == session_task_list_id}.size) {
-                if(tasksList.filter { it.task_list_id == session_task_list_id }.size == generatedTaskCount && finished_generating_tasks){
-                    generatedTaskList = tasksList.filter { it.task_list_id == session_task_list_id }
+            var tasksListSession = tasksList.filter { it.task_list_id == session_task_list_id }
+            if(generatedTaskList.size != tasksListSession.size) {
+                if(tasksListSession.size == generatedTaskCount && finished_generating_tasks){
+                    generatedTaskList = tasksListSession
                     for(task in generatedTaskList) addTaskView(task)
                     updateHUDStats()
                     initHUDHistorical()
@@ -101,7 +111,8 @@ class GeneratedTaskListActivity : AppCompatActivity() {
 
     private fun continueGeneratedTasks(): View.OnClickListener? {
         linear_layout_generated_session_init.visibility = View.GONE
-        session_task_list_id --
+        session_task_list_id =
+            tasksList.last { it.profile_id == profileID }.task_list_id
         generatedTaskList = tasksList.filter { it.task_list_id == session_task_list_id }
         for(task in generatedTaskList) addTaskView(task)
         buttonGeneratedActivitiesFinish.visibility = View.VISIBLE
@@ -112,7 +123,8 @@ class GeneratedTaskListActivity : AppCompatActivity() {
     }
 
     private fun initHUDHistorical() {
-        var generatedTaskListPrior = tasksList.filter { it.task_list_id == session_task_list_id - 1}
+        var generatedTaskListPriorLastID = profileGeneratedTasks.last { it.task_list_finished }.task_list_id
+        var generatedTaskListPrior = profileGeneratedTasks.filter { it.task_list_id == generatedTaskListPriorLastID }.filter {it.task_list_finished}
         var totalTaskPercentage : Int = 0
         var totalTasksCompletedPercentage : Int
 
@@ -126,13 +138,12 @@ class GeneratedTaskListActivity : AppCompatActivity() {
             textViewGeneratedActivitiesHUDLast.text = "$totalTaskPercentage% last"
         }else  textViewGeneratedActivitiesHUDLast.text = ""
 
-        if(tasksList.isNotEmpty()){ // get average of all sessions for display
+        if(profileGeneratedTasks.isNotEmpty()){ // get average of all sessions for display
             totalTaskPercentage = 0
-            for (task in tasksList.filter { it.task_list_id != session_task_list_id}) {
+            for (task in profileGeneratedTasks)
                 totalTaskPercentage += getTaskProgress(task)
-            }
             totalTaskPercentage =
-                ((totalTaskPercentage * 100.0f) / (tasksList.filter { it.task_list_id != session_task_list_id}.size * 100)).toInt()
+                ((totalTaskPercentage * 100.0f) / (profileGeneratedTasks.size * 100)).toInt()
 
             textViewGeneratedActivitiesHUDAvg.text = "$totalTaskPercentage% avg"
         }else textViewGeneratedActivitiesHUDAvg.text = ""
@@ -148,11 +159,7 @@ class GeneratedTaskListActivity : AppCompatActivity() {
     }
 
     private fun createNewGeneratedTasks(): View.OnClickListener?{
-        for(task in tasksList.filter{ it.task_list_id == session_task_list_id - 1})
-        {
-            task.task_list_finished = true
-            generatedTaskViewModel.update(task)
-        }
+
         linear_layout_generated_session_init.visibility = View.GONE
         generateNewTasks()
         return null
