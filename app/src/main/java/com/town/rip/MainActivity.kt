@@ -42,22 +42,27 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         taskViewModel.allTasks.observe(this, Observer { tasks ->
             tasks?.let { taskViewModel.repository.allTasks }
+            profileViewModel.allProfiles.observe(this, Observer {
+                profileList = profileViewModel.allProfiles.value!!
+                rebuildMutableProfileList()
+                if(profileList.isNotEmpty()) {
+                    if (profileList.filter { it.selected }.isEmpty()) {
+                        var profile = profileList.first()
+                        profile.selected = true
+                        profileViewModel.update(profile)
+                    }
+                    buttonGenerate.isEnabled = false
+                    for(task in taskViewModel.allTasks.value!!)
+                        if(task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled) {
+                            buttonGenerate.isEnabled = true
+                            break
+                        }
+                    buttonProfile.text = "Profile: ${profileList.last { it.selected }.name}"
+                }
+            })
+            taskViewModel.allTasks.removeObservers(this)
         })
-        profileViewModel.allProfiles.observe(this, Observer {
-            profileList = profileViewModel.allProfiles.value!!
-            rebuildMutableProfileList()
 
-
-        if(profileList.isNotEmpty()) {
-            if (profileList.filter { it.selected }.isEmpty()) {
-                var profile = profileList.first()
-                profile.selected = true
-                profileViewModel.update(profile)
-            }
-            buttonProfile.text = "Profile: ${profileList.last { it.selected }.name}"
-        }
-
-        })
 
     }
 
