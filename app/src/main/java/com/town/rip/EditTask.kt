@@ -6,8 +6,10 @@ import android.content.DialogInterface
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -174,44 +176,66 @@ class EditTask : AppCompatActivity() {
             taskType = "r"
             unit_of_measurement = textInputUnitOfMeasurement.text.toString()
         }
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setMessage(message_string)
-            .setTitle(title_string)
-            .setPositiveButton("Confirm",
-                DialogInterface.OnClickListener { dialog, id ->
-                    var task = Task(
-                        textInputName.text.toString(),
-                        textInputDescription.text.toString(),
-                        taskType,
-                        unit_of_measurement,
-                        textInputMinUnit.text.toString().toInt(),
-                        textInputMaxUnit.text.toString().toInt(),
-                        textViewDaysPerWeek.text.toString().toInt(),
-                        true,
-                        0,
-                        0,
-                        0,
-                        0,
-                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
-                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
-                        profileList.last{ it.selected }.id,
-                        taskIDList
-                    )
+        if(textInputName.text.toString() == "") showVerticalToast("Set activity name")
+        else if(textInputDescription.text.toString() == "") showVerticalToast("Set activity description")
+        else if(unit_of_measurement == "") showVerticalToast("Set unit of measurement")
+        else if(textInputMinUnit.text.toString() == ""  || textInputMaxUnit.text.toString() == "") showVerticalToast("Set min/max values")
+        else {
+            var min = textInputMinUnit.text.toString().toInt()
+            var max = textInputMaxUnit.text.toString().toInt()
+            if(textInputMinUnit.text.toString().toInt() > textInputMaxUnit.text.toString().toInt()){
+                var max = textInputMinUnit.text.toString().toInt()
+                var min = textInputMaxUnit.text.toString().toInt()
+            }
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setMessage(message_string)
+                .setTitle(title_string)
+                .setPositiveButton("Confirm",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        var task = Task(
+                            textInputName.text.toString(),
+                            textInputDescription.text.toString(),
+                            taskType,
+                            unit_of_measurement,
+                            min,
+                            max,
+                            textViewDaysPerWeek.text.toString().toInt(),
+                            true,
+                            0,
+                            0,
+                            0,
+                            0,
+                            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+                            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+                            profileList.last { it.selected }.id,
+                            taskIDList
+                        )
 
-                    if (editMode) {
-                        task.id = task_id
-                        taskViewModel.update(task)
-                    }
-                    else putTask(task)
-                    finish() // return to previous screen
-                })
-            .setNegativeButton("No",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // CANCEL
-                })
 
-        val alert = builder.create()
-        alert.show()
+                        if (editMode) {
+                            task.id = task_id
+                            taskViewModel.update(task)
+                        } else putTask(task)
+                        finish() // return to previous screen
+
+
+                    })
+                .setNegativeButton("No",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        // CANCEL
+                    })
+
+            val alert = builder.create()
+            alert.show()
+        }
+    }
+
+    private fun showVerticalToast(s: String, debugBoolean: Boolean = true) {
+        var toast =  Toast.makeText(applicationContext, s, Toast.LENGTH_LONG)
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0,0)
+        toast.show()
+        if(debugBoolean) Log.d("", s)
+
     }
 
     private fun putTask(task: Task) {
