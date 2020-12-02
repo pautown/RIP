@@ -1,13 +1,16 @@
 package com.town.rip
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.lifecycle.Observer
@@ -18,16 +21,23 @@ import com.town.rip.database.TaskViewModel
 import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
 import kotlinx.android.synthetic.main.dynamic_linear_layout_task.view.*
 import kotlinx.android.synthetic.main.dynamic_view_profile.view.*
-import com.google.gson.Gson
+import com.town.rip.database.Profile
+import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ScrollingViewTask : AppCompatActivity() {
     private lateinit var taskViewModel : TaskViewModel
     private lateinit var profileViewModel : ProfileViewModel
+    private var mutableProfileList: MutableList<String> = mutableListOf()
 
     private var tasksList: List<Task> = listOf()
 
     private var tasksListViews: MutableList<View> = mutableListOf()
+    private var profileList: List<Profile> = listOf()
+
 
     private var backgroundTint : Boolean = false;
 
@@ -38,16 +48,42 @@ class ScrollingViewTask : AppCompatActivity() {
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         setContentView(R.layout.activity_scrolling_view_tasks)
-        profileViewModel.allProfiles.observe(this, Observer {tasks ->
-                tasks?.let { profileViewModel.repository.allProfiles }
+        profileViewModel.allProfiles.observe(this, Observer {tasks -> tasks?.let { profileViewModel.repository.allProfiles }
+            profileList = profileViewModel.allProfiles.value!!
+            mutableProfileList.clear()
+            mutableProfileList.add("All Activities")
+            for(profile in profileList) mutableProfileList.add(profile.name)
+            buttonActivities.text = "Activities: ${profileList.last { it.selected }.name}"
+
             Log.d("profiles", profileViewModel.allProfiles.value!!.size.toString())
             profileViewModel.allProfiles.removeObservers(this)
             taskViewModel.allTasks.observe(this, Observer {
                 loadTasks()
             })
         })
+    }
+
+    fun setProfile(view: View){
+        // setup the alert builder
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("View profile activities")
+        builder.setItems(mutableProfileList.toTypedArray()) { dialog, which ->
+            Log.v("list id", which.toString());
+            if(which != 0) {
+                var profile = profileList.last { it.selected }
+                profile.selected = false
+                profileViewModel.update(profile)
+                profile = profileList[which - 1]
+                profile.selected = true
+                profileViewModel.update(profile)
+                buttonActivities.text = "Activities: " + profile.name
+            }
+
+        }
 
 
+        val dialog = builder.create()
+        dialog.show()
     }
 
     private fun loadTasks() {

@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
                var profile = profileList.last { it.selected }
                profile.selected = false
                profileViewModel.update(profile)
-               profile = profileList.last { it.name == mutableProfileList[which] }
+               profile = profileList[which]
                profile.selected = true
                profileViewModel.update(profile)
                buttonProfile.text = "Profile: " + profile.name
