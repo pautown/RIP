@@ -37,6 +37,8 @@ class ScrollingViewTask : AppCompatActivity() {
 
     private var tasksListViews: MutableList<View> = mutableListOf()
     private var profileList: List<Profile> = listOf()
+    private var profileID:Int = 0
+    private var viewAll:Boolean = false
 
 
     private var backgroundTint : Boolean = false;
@@ -50,6 +52,7 @@ class ScrollingViewTask : AppCompatActivity() {
         setContentView(R.layout.activity_scrolling_view_tasks)
         profileViewModel.allProfiles.observe(this, Observer {tasks -> tasks?.let { profileViewModel.repository.allProfiles }
             profileList = profileViewModel.allProfiles.value!!
+            profileID = profileList.last { it.selected }.id
             mutableProfileList.clear()
             mutableProfileList.add("All Activities")
             for(profile in profileList) mutableProfileList.add(profile.name)
@@ -64,24 +67,21 @@ class ScrollingViewTask : AppCompatActivity() {
     }
 
     fun setProfile(view: View){
-        // setup the alert builder
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("View profile activities")
+        builder.setTitle("View activities")
         builder.setItems(mutableProfileList.toTypedArray()) { dialog, which ->
-            Log.v("list id", which.toString());
+            Log.v("profile id", which.toString());
             if(which != 0) {
-                var profile = profileList.last { it.selected }
-                profile.selected = false
-                profileViewModel.update(profile)
-                profile = profileList[which - 1]
-                profile.selected = true
-                profileViewModel.update(profile)
-                buttonActivities.text = "Activities: " + profile.name
+                profileID = profileList[which - 1].id
+                viewAll = false
+                buttonActivities.text = "Activities: " + profileList[which - 1].name
+            }else{
+                viewAll = true
+                tasksList = taskViewModel.allTasks.value!!
+                buttonActivities.text = "All Activities"
             }
-
+            loadTasks()
         }
-
-
         val dialog = builder.create()
         dialog.show()
     }
@@ -91,21 +91,26 @@ class ScrollingViewTask : AppCompatActivity() {
         vertical_layout_view_1.removeAllViews()
         taskViewModel.allTasks.removeObservers(this)
         if(!taskViewModel.allTasks.value.isNullOrEmpty()) {
-            tasksList = taskViewModel.allTasks.value!!
+            if(viewAll) tasksList = taskViewModel.allTasks.value!!
+            else taskViewModel.allTasks.value!!.filter { it.profile_id == profileID }
+
             var enabledTasks = 0
-            for (task in taskViewModel.allTasks.value!!) {
+            for (task in tasksList) {
                 if (task.enabled) enabledTasks++
                 addTask()
-                updateSubheading(taskViewModel.allTasks.value!!.size, enabledTasks)
+                updateSubheading(tasksList.size, enabledTasks)
             }
             updateTaskDisplays()
-        }else textViewSubheading.text = "No activities created, create some!"
+        }else textViewSubheading.text = "No activities for this profile, create some!"
+
         taskViewModel.allTasks.observe(this, Observer {
             var enabledTasks = 0
-            if(tasksList.size != taskViewModel.allTasks.value!!.size)
+            if((viewAll && tasksList.size != taskViewModel.allTasks.value!!.size) ||
+                (!viewAll && tasksList.size != taskViewModel.allTasks.value!!.filter { it.profile_id == profileID }.size))
             {
                 vertical_layout_view_1.removeAllViews()
-                tasksList = taskViewModel.allTasks.value!!
+                tasksList = if(viewAll) taskViewModel.allTasks.value!!
+                else taskViewModel.allTasks.value!!.filter { it.profile_id == profileID }
                 for (task in tasksList) {
                     if (task.enabled) enabledTasks++
                     addTask()
@@ -113,7 +118,8 @@ class ScrollingViewTask : AppCompatActivity() {
                 updateSubheading(tasksList.size,enabledTasks)
                 updateTaskDisplays()
             }else if(!viewEnabledEqualsRepositoryEnabled()){
-                tasksList = taskViewModel.allTasks.value!!
+                if(viewAll) tasksList =  taskViewModel.allTasks.value!!
+                else taskViewModel.allTasks.value!!.filter { it.profile_id == profileID }
                 enabledTasks = 0
                 for(task in tasksList) if (task.enabled) enabledTasks++
                 updateSubheading(tasksList.size,enabledTasks)
@@ -127,7 +133,8 @@ class ScrollingViewTask : AppCompatActivity() {
     private fun viewEnabledEqualsRepositoryEnabled(): Boolean {
         var returnBool = true
         for ((i, task) in tasksList.withIndex())
-            if(tasksList[i].enabled !=  taskViewModel.allTasks.value!![i].enabled)
+            if((viewAll && tasksList[i].enabled !=  taskViewModel.allTasks.value!![i].enabled) ||
+                (!viewAll && tasksList[i].enabled !=  taskViewModel.allTasks.value!!.filter { it.profile_id == profileID }[i].enabled))
                 returnBool = false
         return  returnBool
     }
