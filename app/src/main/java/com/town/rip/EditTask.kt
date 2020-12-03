@@ -184,8 +184,8 @@ class EditTask : AppCompatActivity() {
             var min = textInputMinUnit.text.toString().toInt()
             var max = textInputMaxUnit.text.toString().toInt()
             if(textInputMinUnit.text.toString().toInt() > textInputMaxUnit.text.toString().toInt()){
-                var max = textInputMinUnit.text.toString().toInt()
-                var min = textInputMaxUnit.text.toString().toInt()
+                max = textInputMinUnit.text.toString().toInt()
+                min = textInputMaxUnit.text.toString().toInt()
             }
             val builder: AlertDialog.Builder = AlertDialog.Builder(this)
             builder.setMessage(message_string)

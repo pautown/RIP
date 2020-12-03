@@ -42,8 +42,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         taskViewModel.allTasks.observe(this, Observer { tasks ->
             tasks?.let { taskViewModel.repository.allTasks }
+            tasksList = taskViewModel.allTasks.value!!
             profileViewModel.allProfiles.observe(this, Observer {
                 profileList = profileViewModel.allProfiles.value!!
+                taskViewModel.allTasks.removeObservers(this)
                 rebuildMutableProfileList()
                 if(profileList.isNotEmpty()) {
                     if (profileList.filter { it.selected }.isEmpty()) {
@@ -59,8 +61,18 @@ class MainActivity : AppCompatActivity() {
                         }
                     buttonProfile.text = "Profile: ${profileList.last { it.selected }.name}"
                 }
+
+                taskViewModel.allTasks.observe(this, Observer { tasks ->
+                    tasks?.let { taskViewModel.repository.allTasks }
+                    tasksList = taskViewModel.allTasks.value!!
+                    buttonGenerate.isEnabled = false
+                    for(task in taskViewModel.allTasks.value!!)
+                        if(task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled) {
+                            buttonGenerate.isEnabled = true
+                            break
+                        }
+                })
             })
-            taskViewModel.allTasks.removeObservers(this)
         })
 
 
@@ -127,8 +139,6 @@ class MainActivity : AppCompatActivity() {
                    .setPositiveButton("OK") { _: DialogInterface, _: Int ->
                        // Do your work with text here
                        val text = editText.text.toString()
-
-
                        showVerticalToast("Profile $text created")
                        var profile = Profile(text, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(
                            Date()
@@ -148,6 +158,10 @@ class MainActivity : AppCompatActivity() {
                    Log.v("list id", which.toString());
                    var profile = profileList.last { it.name == mutableProfileList[which] }
                    profileViewModel.delete(profile)
+
+                   for(task in tasksList.filter { it.profile_id == profile.id })
+                       taskViewModel.delete(task)
+
                    if(profileList.none { it.selected }) {
                        profile = profileList.first()
                        profile.selected = true
