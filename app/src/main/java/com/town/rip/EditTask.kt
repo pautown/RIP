@@ -7,6 +7,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
@@ -107,6 +108,7 @@ class EditTask : AppCompatActivity() {
                 progress: Int, fromUser: Boolean
             ) {
                 textViewDaysPerWeek.text = seekBar.progress.toString()
+                seekBar.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
