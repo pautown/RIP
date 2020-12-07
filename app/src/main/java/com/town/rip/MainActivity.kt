@@ -82,14 +82,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setGenerateButtonText() {
+        var buttonText = "Generate Activities"
         if(!generatedTaskListViewModel.allTasks.value.isNullOrEmpty() &&
             generatedTaskListViewModel.allTasks.value!!.filter{ it.profile_id == profileList.last { it.selected }.id }.isNotEmpty())
             if(!generatedTaskListViewModel.allTasks.value!!.last { it.profile_id == profileList.last { it.selected }.id }.task_list_finished)
-                buttonGenerate.text = "Continue Activities"
-            else
-                buttonGenerate.text = "Generate Activities"
-        else
-            buttonGenerate.text = "Generate Activities"
+                buttonText = "Continue Activities"
+        buttonGenerate.text = buttonText
     }
 
     private fun rebuildMutableProfileList() {
