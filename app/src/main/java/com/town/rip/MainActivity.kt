@@ -15,10 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.town.rip.database.Profile
-import com.town.rip.database.ProfileViewModel
-import com.town.rip.database.Task
-import com.town.rip.database.TaskViewModel
+import com.town.rip.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,6 +24,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     private lateinit var taskViewModel: TaskViewModel
     private lateinit var profileViewModel: ProfileViewModel
+    private lateinit var generatedTaskListViewModel: GeneratedTaskListViewModel
 
     private lateinit var tasksList: List<Task>
     private var profileList: List<Profile> = listOf()
@@ -35,10 +33,10 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        generatedTaskListViewModel = ViewModelProvider(this).get(GeneratedTaskListViewModel::class.java)
         setContentView(R.layout.activity_main)
         taskViewModel.allTasks.observe(this, Observer { tasks ->
             tasks?.let { taskViewModel.repository.allTasks }
@@ -61,21 +59,37 @@ class MainActivity : AppCompatActivity() {
                         }
                     buttonProfile.text = "Profile: ${profileList.last { it.selected }.name}"
                 }
-
-                taskViewModel.allTasks.observe(this, Observer { tasks ->
-                    tasks?.let { taskViewModel.repository.allTasks }
-                    tasksList = taskViewModel.allTasks.value!!
-                    buttonGenerate.isEnabled = false
-                    for(task in taskViewModel.allTasks.value!!)
-                        if(task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled) {
-                            buttonGenerate.isEnabled = true
-                            break
-                        }
+                generatedTaskListViewModel.allTasks.observe(this, Observer { tasks ->
+                    tasks?.let { generatedTaskListViewModel.repository.allGeneratedTaskLists }
+                    taskViewModel.allTasks.observe(this, Observer { tasks ->
+                        tasks?.let { taskViewModel.repository.allTasks }
+                        tasksList = taskViewModel.allTasks.value!!
+                        buttonGenerate.isEnabled = false
+                        for(task in taskViewModel.allTasks.value!!)
+                            if(task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled) {
+                                buttonGenerate.isEnabled = true
+                                setGenerateButtonText()
+                                break
+                            }
+                    })
                 })
+
+
             })
         })
 
 
+    }
+
+    private fun setGenerateButtonText() {
+        if(!generatedTaskListViewModel.allTasks.value.isNullOrEmpty() &&
+            generatedTaskListViewModel.allTasks.value!!.filter{ it.profile_id == profileList.last { it.selected }.id }.isNotEmpty())
+            if(!generatedTaskListViewModel.allTasks.value!!.last { it.profile_id == profileList.last { it.selected }.id }.task_list_finished)
+                buttonGenerate.text = "Continue Activities"
+            else
+                buttonGenerate.text = "Generate Activities"
+        else
+            buttonGenerate.text = "Generate Activities"
     }
 
     private fun rebuildMutableProfileList() {
@@ -131,6 +145,7 @@ class MainActivity : AppCompatActivity() {
                profile.selected = true
                profileViewModel.update(profile)
                buttonProfile.text = "Profile: " + profile.name
+               setGenerateButtonText()
            }else if (which == mutableProfileList.size - profileOptions){
                val editText = EditText(this)
                AlertDialog.Builder(this)
