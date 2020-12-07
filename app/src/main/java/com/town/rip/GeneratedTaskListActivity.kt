@@ -150,12 +150,24 @@ class GeneratedTaskListActivity : AppCompatActivity() {
     }
 
     fun finishGeneratedTasks(view:View){
-        for(task in generatedTaskList) {
-            task.task_list_finished = true
-            generatedTaskViewModel.update(task)
-        }
-        // TODO: Create view for finishing of tasks.
-        finish()
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setMessage("Finish activities?")
+            .setTitle("Return to menu?")
+            .setPositiveButton("Confirm", DialogInterface.OnClickListener { dialog, id ->
+                for(task in generatedTaskList) {
+                    task.task_list_finished = true
+                    generatedTaskViewModel.update(task)
+                }
+                // TODO: Create view for finishing of tasks.
+                finish()
+            })
+            .setNegativeButton("No",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // CANCEL
+                })
+
+        val alert = builder.create()
+        alert.show()
     }
 
     private fun createNewGeneratedTasks(): View.OnClickListener?{
