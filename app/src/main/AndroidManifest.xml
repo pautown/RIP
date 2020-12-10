@@ -11,15 +11,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".CalenderActivity"></activity>
         <activity android:name=".GeneratedTaskListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SET_TIMER" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".EditTask" />
         <activity android:name=".ScrollingViewTask" />
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

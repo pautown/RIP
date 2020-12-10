@@ -204,6 +204,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun viewCalender(view: View) {
+        val intent = Intent(this, CalenderActivity::class.java).apply {
+            // putExtras(extras)
+        }
+        startActivity(intent)
+    }
+
     fun viewTasks(view: View) {
         val intent = Intent(this, ScrollingViewTask::class.java).apply {
            // putExtras(extras)
@@ -219,8 +226,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun addTask(view: View) {
-
-
         val intent = Intent(this, EditTask::class.java).apply {
             // putExtras(extras)
         }
