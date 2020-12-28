@@ -111,19 +111,20 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/button7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#ECEBEB"
-                android:text="Settings" />
-
-            <Button
                 android:id="@+id/buttonCalender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#ECEBEB"
                 android:onClick="viewCalender"
                 android:text="History" />
+
+            <Button
+                android:id="@+id/buttonTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#ECEBEB"
+                android:onClick="setTheme"
+                android:text="Light Mode" />
 
             <Button
                 android:id="@+id/buttonProfile"

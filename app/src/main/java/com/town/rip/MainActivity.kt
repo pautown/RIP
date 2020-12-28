@@ -22,6 +22,7 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
+    private var themeInt: Int = 0
     private lateinit var taskViewModel: TaskViewModel
     private lateinit var profileViewModel: ProfileViewModel
     private lateinit var generatedTaskListViewModel: GeneratedTaskListViewModel
@@ -45,15 +46,15 @@ class MainActivity : AppCompatActivity() {
                 profileList = profileViewModel.allProfiles.value!!
                 taskViewModel.allTasks.removeObservers(this)
                 rebuildMutableProfileList()
-                if(profileList.isNotEmpty()) {
+                if (profileList.isNotEmpty()) {
                     if (profileList.filter { it.selected }.isEmpty()) {
                         var profile = profileList.first()
                         profile.selected = true
                         profileViewModel.update(profile)
                     }
                     buttonGenerate.isEnabled = false
-                    for(task in taskViewModel.allTasks.value!!)
-                        if(task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled) {
+                    for (task in taskViewModel.allTasks.value!!)
+                        if (task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled) {
                             buttonGenerate.isEnabled = true
                             break
                         }
@@ -65,20 +66,46 @@ class MainActivity : AppCompatActivity() {
                         tasks?.let { taskViewModel.repository.allTasks }
                         tasksList = taskViewModel.allTasks.value!!
                         buttonGenerate.isEnabled = false
-                        for(task in taskViewModel.allTasks.value!!)
-                            if(task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled) {
+                        for (task in taskViewModel.allTasks.value!!)
+                            if (task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled) {
                                 buttonGenerate.isEnabled = true
                                 setGenerateButtonText()
                                 break
                             }
                     })
                 })
-
-
             })
         })
+        loadSharedPrefs()
+    }
 
+    fun setTheme(view:View){
+        val pref = applicationContext.getSharedPreferences("app", 0) // 0 - for private mode
+        val editor = pref.edit()
+        themeInt ++
+        if(themeInt > 2) themeInt = 0
+        if(themeInt == 0) buttonTheme.text = "Light Mode"
+        else if(themeInt == 1) buttonTheme.text = "Dark Mode"
+        else if(themeInt == 2) buttonTheme.text = "Dusk Mode"
+        editor.putInt("THEME", themeInt)
+        editor.commit();
+        Log.v("theme_id", themeInt.toString());
 
+    }
+
+    private fun loadSharedPrefs() {
+        val pref = applicationContext.getSharedPreferences("app", 0) // 0 - for private mode
+        val editor = pref.edit()
+        themeInt = pref.getInt("THEME", -1);
+        if(themeInt == null)
+        {
+            themeInt = 0
+            editor.putInt("THEME", themeInt)
+            editor.commit();
+        }
+        if(themeInt == 0) buttonTheme.text = "Light Mode"
+        else if(themeInt == 1) buttonTheme.text = "Dark Mode"
+        else if(themeInt == 2) buttonTheme.text = "Dusk Mode"
     }
 
     private fun setGenerateButtonText() {
@@ -106,7 +133,7 @@ class MainActivity : AppCompatActivity() {
     val Float.toPx: Int
         get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
-    fun AlertDialog.Builder.setEditText(editText: EditText, textHint:String = ""): AlertDialog.Builder {
+    fun AlertDialog.Builder.setEditText(editText: EditText, textHint: String = ""): AlertDialog.Builder {
         val container = FrameLayout(context)
         container.addView(editText)
         editText.hint = textHint
@@ -153,9 +180,14 @@ class MainActivity : AppCompatActivity() {
                        // Do your work with text here
                        val text = editText.text.toString()
                        showVerticalToast("Profile $text created")
-                       var profile = Profile(text, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(
-                           Date()
-                       ), false)
+                       var profile = Profile(
+                           text, SimpleDateFormat(
+                               "dd/MM/yyyy",
+                               Locale.getDefault()
+                           ).format(
+                               Date()
+                           ), false
+                       )
                        profileViewModel.insert(profile)
                    }
                    .setNegativeButton("Cancel", null)
@@ -198,7 +230,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showVerticalToast(s: String, debugBoolean: Boolean = true) {
         var toast =  Toast.makeText(applicationContext, s, Toast.LENGTH_LONG)
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0,0)
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
         toast.show()
         if(debugBoolean) Log.d("", s)
 
