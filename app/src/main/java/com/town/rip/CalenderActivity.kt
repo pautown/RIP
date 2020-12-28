@@ -8,14 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.town.rip.database.*
 import kotlinx.android.synthetic.main.activity_calender.*
-import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
-import kotlinx.android.synthetic.main.dynamic_linear_layout_task.view.*
 
 
 class CalenderActivity : AppCompatActivity() {
@@ -25,6 +22,7 @@ class CalenderActivity : AppCompatActivity() {
     private lateinit var tasksList: List<GeneratedTask>
     private var mutableProfileList: MutableList<String> = mutableListOf()
     private var profileID:Int = 0
+    private var perCounter:Int = 0
     private var viewAll:Boolean = false
     private val entries = ArrayList<Entry>()
 
@@ -48,6 +46,17 @@ class CalenderActivity : AppCompatActivity() {
                 loadChartView()
             })
         })
+    }
+
+    fun setPer(view: View){
+        perCounter ++
+        if(perCounter > 2) perCounter = 0
+        when (perCounter) {
+            0 -> buttonPer.text = "Per: 1 Day"
+            1 -> buttonPer.text = "Per: 7 Days"
+            2 -> buttonPer.text = "Per: 31 Days"
+        }
+        loadChartView()
     }
 
     fun setProfile(view: View){
@@ -77,8 +86,13 @@ class CalenderActivity : AppCompatActivity() {
             tasksList.filter{it.profile_id == profileID}.first().task_list_id
         // loop through tasks and create percentage entry for each days tasks
         var cumulative_complete = 0
-        var days_tasks = 0
+        var iterationTasks = 0
         var i = 0
+        var counterLimit = 1
+        var counter = 0
+
+        if(perCounter == 1) counterLimit = 7
+        else if(perCounter == 2) counterLimit = 31
 
         //clear entries
         entries.clear()
@@ -90,19 +104,23 @@ class CalenderActivity : AppCompatActivity() {
             {
                 if(task.amount_completed > 0)
                     cumulative_complete += (task.amount_completed/task.amount_to_complete)
-                days_tasks++
+                iterationTasks++
             }else{
                 task_list_id = task.task_list_id
-                if(cumulative_complete > 0)
-                    cumulative_complete = (((cumulative_complete * 100.0f) / days_tasks)).toInt()
-
-                Log.d("task list i", i.toString())
-                Log.d("task list id", task_list_id.toString())
-                Log.d("task list cumulative", cumulative_complete.toString())
-                entries.add(Entry(i.toFloat(),cumulative_complete.toFloat()))
-                cumulative_complete = 0
-                days_tasks = 0
-                i++
+                counter ++
+                if(counter == counterLimit || task == tempTasksList.last())
+                {
+                    counter = 0
+                    if(cumulative_complete > 0)
+                        cumulative_complete = (((cumulative_complete * 100.0f) / iterationTasks)).toInt()
+                    Log.d("task list i", i.toString())
+                    Log.d("task list id", task_list_id.toString())
+                    Log.d("task list cumulative", cumulative_complete.toString())
+                    entries.add(Entry(i.toFloat(),cumulative_complete.toFloat()))
+                    cumulative_complete = 0
+                    iterationTasks = 0
+                    i++
+                }
             }
         }
         val vl = LineDataSet(entries, "Percentage Complete")
