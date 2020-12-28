@@ -202,16 +202,27 @@ class MainActivity : AppCompatActivity() {
                builder.setItems(mutableProfileList.toTypedArray()) { dialog, which ->
                    Log.v("list id", which.toString());
                    var profile = profileList.last { it.name == mutableProfileList[which] }
-                   profileViewModel.delete(profile)
+                   val builder2: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
+                   builder2.setMessage("This will also delete all activities created by this profile.")
+                       .setTitle("Delete Profile?")
+                       .setPositiveButton("Confirm",
+                           DialogInterface.OnClickListener { dialog, id ->
+                               profileViewModel.delete(profile)
+                               for(task in tasksList.filter { it.profile_id == profile.id })
+                                   taskViewModel.delete(task)
+                               if(profileList.none { it.selected }) {
+                                   profile = profileList.first()
+                                   profile.selected = true
+                                   profileViewModel.update(profile)
+                               }
+                           })
+                       .setNegativeButton("No",
+                           DialogInterface.OnClickListener { dialog, id ->
+                               // CANCEL
+                           })
+                   val alert2 = builder2.create()
+                   alert2.show()
 
-                   for(task in tasksList.filter { it.profile_id == profile.id })
-                       taskViewModel.delete(task)
-
-                   if(profileList.none { it.selected }) {
-                       profile = profileList.first()
-                       profile.selected = true
-                       profileViewModel.update(profile)
-                   }
                    buttonProfile.text = "Profile: " + profile.name
 
                }
