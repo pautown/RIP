@@ -321,7 +321,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
-                        android:backgroundTint="#F3F3F3"
+                        android:backgroundTint="#ECEBEB"
                         android:onClick="cancelTask"
                         android:text="Cancel" />
 
@@ -331,7 +331,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
-                        android:backgroundTint="#F3F3F3"
+                        android:backgroundTint="#ECEBEB"
                         android:onClick="createTask"
                         android:text="Finish" />
                 </LinearLayout>
