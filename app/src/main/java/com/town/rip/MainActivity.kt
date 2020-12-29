@@ -3,7 +3,9 @@ package com.town.rip
 import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -31,6 +33,10 @@ class MainActivity : AppCompatActivity() {
     private var profileList: List<Profile> = listOf()
     private var mutableProfileList: MutableList<String> = mutableListOf()
     private var profileOptions = 1
+
+    private var backgroundString = "#FFFFFF"
+    private var buttonBackgroundString = "#ECEBEB"
+    private var buttonTextString = "#000000"
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         editor.putInt("THEME", themeInt)
         editor.commit();
         Log.v("theme_id", themeInt.toString());
-
+        loadTheme()
     }
 
     private fun loadSharedPrefs() {
@@ -106,6 +112,55 @@ class MainActivity : AppCompatActivity() {
         if(themeInt == 0) buttonTheme.text = "Light Mode"
         else if(themeInt == 1) buttonTheme.text = "Dark Mode"
         else if(themeInt == 2) buttonTheme.text = "Dusk Mode"
+        loadTheme()
+    }
+
+    private fun loadTheme() {
+
+        when (themeInt) {
+            0 // light mode
+            -> {
+                backgroundString = "#FFFFFF"
+                buttonBackgroundString = "#ECEBEB"
+                buttonTextString = "#595959"
+            }
+            1 // dark mode
+            -> {
+                backgroundString = "#171717"
+                buttonBackgroundString = "#113553"
+                buttonTextString = "#B8A542"
+            }
+            2 // dusk mode
+            -> {
+                backgroundString = "#7C7A7A"
+                buttonBackgroundString ="#BCBDBD"
+                buttonTextString = "#3C3C3C"
+            }
+        }
+
+        constraintLayout.setBackgroundColor(Color.parseColor(backgroundString))
+
+        textView.setTextColor(Color.parseColor(buttonTextString))
+        textView2.setTextColor(Color.parseColor(buttonTextString))
+
+        buttonGenerate.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        buttonGenerate.setTextColor(Color.parseColor(buttonTextString))
+
+        button5.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        button5.setTextColor(Color.parseColor(buttonTextString))
+
+        button6.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        button6.setTextColor(Color.parseColor(buttonTextString))
+
+        buttonCalender.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        buttonCalender.setTextColor(Color.parseColor(buttonTextString))
+
+        buttonTheme.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        buttonTheme.setTextColor(Color.parseColor(buttonTextString))
+
+        buttonProfile.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        buttonProfile.setTextColor(Color.parseColor(buttonTextString))
+
     }
 
     private fun setGenerateButtonText() {
@@ -262,9 +317,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun generateTasks(view: View) {
-        val intent = Intent(this, GeneratedTaskListActivity::class.java).apply {
-            // putExtras(extras)
-        }
+        val intent = Intent(this, GeneratedTaskListActivity::class.java)
         startActivity(intent)
     }
 

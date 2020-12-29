@@ -2,8 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#7C7A7A"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -22,6 +24,7 @@
             android:layout_height="wrap_content"
             android:text="RIP"
             android:textAlignment="center"
+            android:textColor="#3C3C3C"
             android:textSize="66sp"
             android:textStyle="bold|italic" />
 
@@ -31,6 +34,7 @@
             android:layout_height="wrap_content"
             android:text="Randomized Iterative Productivity"
             android:textAllCaps="false"
+            android:textColor="#515151"
             android:textSize="14sp"
             android:textStyle="italic" />
 
@@ -68,9 +72,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
-                android:backgroundTint="#ECEBEB"
+                android:backgroundTint="#BCBDBD"
                 android:onClick="generateTasks"
                 android:text="Generate Daily Activities"
+                android:textColor="#515151"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

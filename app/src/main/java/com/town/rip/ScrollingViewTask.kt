@@ -3,6 +3,7 @@ package com.town.rip
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
@@ -22,7 +24,9 @@ import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
 import kotlinx.android.synthetic.main.dynamic_linear_layout_task.view.*
 import kotlinx.android.synthetic.main.dynamic_view_profile.view.*
 import com.town.rip.database.Profile
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
+import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.constraintLayout
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -41,15 +45,23 @@ class ScrollingViewTask : AppCompatActivity() {
     private var viewAll:Boolean = false
 
 
-    private var backgroundTint : Boolean = false;
+    private var backgroundTint : Boolean = false
+
+    private var backgroundString = "#FFFFFF"
+    private var backgroundStringLight = "#FFFFFF"
+    private var buttonBackgroundString = "#ECEBEB"
+    private var buttonTextString = "#000000"
+    private var themeInt: Int = 0
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         setContentView(R.layout.activity_scrolling_view_tasks)
+        loadSharedPrefs()
         profileViewModel.allProfiles.observe(this, Observer {tasks -> tasks?.let { profileViewModel.repository.allProfiles }
             profileList = profileViewModel.allProfiles.value!!
             profileID = profileList.last { it.selected }.id
@@ -64,6 +76,53 @@ class ScrollingViewTask : AppCompatActivity() {
                 loadTasks()
             })
         })
+    }
+
+    private fun loadSharedPrefs() {
+        val pref = applicationContext.getSharedPreferences("app", 0) // 0 - for private mode
+        val editor = pref.edit()
+        themeInt = pref.getInt("THEME", -1);
+        if(themeInt == null)
+        {
+            themeInt = 0
+            editor.putInt("THEME", themeInt)
+            editor.commit();
+        }
+
+        loadTheme()
+    }
+
+    private fun loadTheme() {
+        when (themeInt) {
+            0 // light mode
+            -> {
+                backgroundString = "#FFFFFF"
+                buttonBackgroundString = "#ECEBEB"
+                buttonTextString = "#595959"
+            }
+            1 // dark mode
+            -> {
+                backgroundString = "#171717"
+                backgroundStringLight = "#373737"
+                buttonBackgroundString = "#113553"
+                buttonTextString = "#B8A542"
+            }
+            2 // dusk mode
+            -> {
+                backgroundString = "#7C7A7A"
+                backgroundStringLight = "#8F8E8E"
+                buttonBackgroundString ="#BCBDBD"
+                buttonTextString = "#3C3C3C"
+            }
+        }
+        constraintLayout.setBackgroundColor(Color.parseColor(backgroundString))
+
+        textView5.setTextColor(Color.parseColor(buttonTextString))
+        textViewSubheading.setTextColor(Color.parseColor(buttonTextString))
+        textViewViewTextsLoadingMessage.setTextColor(Color.parseColor(buttonTextString))
+
+        buttonActivities.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        buttonActivities.setTextColor(Color.parseColor(buttonTextString))
     }
 
     fun setProfile(view: View){
@@ -147,6 +206,7 @@ class ScrollingViewTask : AppCompatActivity() {
         val layout = findViewById<View>(R.id.vertical_layout_view_1) as LinearLayout
         for ((i, view) in layout.children.withIndex()) {
             val task = tasksList[i]
+            setTaskTheme(view)
             view.textViewDynamicTaskName.text = task.name
             view.textViewDynamicTaskDescription.text = task.description
             view.textViewDynamicTaskMagnitude.text = "${task.minimum} to ${task.maximum} ${task.unit_of_measurement} per activity"
@@ -182,6 +242,7 @@ class ScrollingViewTask : AppCompatActivity() {
                 container.addView(viewProfile)
 
                 viewProfile.checkBox.text = profile.name
+                viewProfile.checkBox.setTextColor(Color.parseColor(buttonTextString))
                 viewProfile.checkBox.isChecked = task.profile_ids.contains(profile.id)
                 viewProfile.checkBox.isEnabled = profile.id != task.profile_id
                 viewProfile.checkBox.setOnClickListener{
@@ -202,12 +263,27 @@ class ScrollingViewTask : AppCompatActivity() {
         }
     }
 
+    private fun setTaskTheme(view: View) {
+        view.linearLayout.setBackgroundColor(Color.parseColor(backgroundString))
+
+        view.textViewDynamicTaskName.setTextColor(Color.parseColor(buttonTextString))
+        view.textViewEnabled.setTextColor(Color.parseColor(buttonTextString))
+        view.textViewDynamicTaskDescription.setTextColor(Color.parseColor(buttonTextString))
+        view.textViewDynamicTaskMagnitude.setTextColor(Color.parseColor(buttonTextString))
+        view.textViewDynamicTaskFrequency.setTextColor(Color.parseColor(buttonTextString))
+        view.textView4.setTextColor(Color.parseColor(buttonTextString))
+
+
+        view.buttonScrollingViewInfoEdit.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        view.buttonScrollingViewInfoEdit.setTextColor(Color.parseColor(buttonTextString))
+    }
+
     private fun addTask(){
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view: View = inflater.inflate(R.layout.dynamic_linear_layout_task, null)
         val container = findViewById<LinearLayout>(R.id.vertical_layout_view_1)
         container.addView(view)
-        if (backgroundTint) view.dynamic_linear_layout_base_task.setBackgroundColor(Color.parseColor("#EEEEEE"))
+        if (backgroundTint) view.dynamic_linear_layout_base_task.setBackgroundColor(Color.parseColor(backgroundStringLight))
         backgroundTint = !backgroundTint
     }
 
