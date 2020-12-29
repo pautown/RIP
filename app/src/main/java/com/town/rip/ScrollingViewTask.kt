@@ -98,12 +98,13 @@ class ScrollingViewTask : AppCompatActivity() {
             -> {
                 backgroundString = "#FFFFFF"
                 buttonBackgroundString = "#ECEBEB"
+                backgroundStringLight = "#F8F8F8"
                 buttonTextString = "#595959"
             }
             1 // dark mode
             -> {
                 backgroundString = "#171717"
-                backgroundStringLight = "#373737"
+                backgroundStringLight = "#222222"
                 buttonBackgroundString = "#113553"
                 buttonTextString = "#B8A542"
             }
@@ -241,30 +242,57 @@ class ScrollingViewTask : AppCompatActivity() {
                 val container = view.layoutProfiles
                 container.addView(viewProfile)
 
-                viewProfile.checkBox.text = profile.name
-                viewProfile.checkBox.setTextColor(Color.parseColor(buttonTextString))
+                viewProfile.checkboxTextView.text = profile.name
+
+                if (!backgroundTint)
+                    viewProfile.divider3.setBackgroundColor(Color.parseColor(backgroundStringLight))
+                else
+                    viewProfile.divider3.setBackgroundColor(Color.parseColor(backgroundString))
+
+                viewProfile.checkBox.buttonTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+                viewProfile.checkboxTextView.setTextColor(Color.parseColor(buttonTextString))
+
                 viewProfile.checkBox.isChecked = task.profile_ids.contains(profile.id)
                 viewProfile.checkBox.isEnabled = profile.id != task.profile_id
-                viewProfile.checkBox.setOnClickListener{
-                    var profile_ids_temp = task.profile_ids.toMutableList()
-                    if(viewProfile.checkBox.isChecked && !task.profile_ids.contains(profile.id))
-                        profile_ids_temp.add(profile.id)
-                    else if (!viewProfile.checkBox.isChecked && task.profile_ids.contains(profile.id)){
-                        for ((i, id) in profile_ids_temp.withIndex()) {
-                            if (id == profile.id) profile_ids_temp.removeAt(i)
-                            break
-                        }
-                    }
-                    task.profile_ids = profile_ids_temp
-                    taskViewModel.update(task)
-                }
-            }
+                viewProfile.checkBox.isClickable = false
 
+                viewProfile.profileLayout.setOnClickListener{ toggleTaskProfiles(viewProfile, profile, task)}
+            }
+            backgroundTint = !backgroundTint
         }
     }
 
+    private fun toggleTaskProfiles(viewProfile: View, profile: Profile, task: Task) {
+        var profile_ids_temp = task.profile_ids.toMutableList()
+        if(viewProfile.checkBox.isEnabled) viewProfile.checkBox.toggle()
+        if(viewProfile.checkBox.isChecked && !task.profile_ids.contains(profile.id))
+            profile_ids_temp.add(profile.id)
+        else if (!viewProfile.checkBox.isChecked && task.profile_ids.contains(profile.id)){
+            for ((i, id) in profile_ids_temp.withIndex()) {
+                if (id == profile.id)
+                {
+                    profile_ids_temp.removeAt(i)
+                    break
+                }
+            }
+        }
+        task.profile_ids = profile_ids_temp
+        taskViewModel.update(task)
+    }
+
     private fun setTaskTheme(view: View) {
-        view.linearLayout.setBackgroundColor(Color.parseColor(backgroundString))
+
+        if (backgroundTint) {
+            view.linearLayout.setBackgroundColor(Color.parseColor(backgroundStringLight))
+            view.view2.setBackgroundColor(Color.parseColor(backgroundString))
+            view.divider6.setBackgroundColor(Color.parseColor(backgroundString))
+            view.view.setBackgroundColor(Color.parseColor(backgroundString))
+        }else{
+            view.linearLayout.setBackgroundColor(Color.parseColor(backgroundString))
+            view.view2.setBackgroundColor(Color.parseColor(backgroundStringLight))
+            view.divider6.setBackgroundColor(Color.parseColor(backgroundStringLight))
+            view.view.setBackgroundColor(Color.parseColor(backgroundStringLight))
+        }
 
         view.textViewDynamicTaskName.setTextColor(Color.parseColor(buttonTextString))
         view.textViewEnabled.setTextColor(Color.parseColor(buttonTextString))
@@ -272,6 +300,8 @@ class ScrollingViewTask : AppCompatActivity() {
         view.textViewDynamicTaskMagnitude.setTextColor(Color.parseColor(buttonTextString))
         view.textViewDynamicTaskFrequency.setTextColor(Color.parseColor(buttonTextString))
         view.textView4.setTextColor(Color.parseColor(buttonTextString))
+
+
 
 
         view.buttonScrollingViewInfoEdit.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
@@ -283,8 +313,7 @@ class ScrollingViewTask : AppCompatActivity() {
         val view: View = inflater.inflate(R.layout.dynamic_linear_layout_task, null)
         val container = findViewById<LinearLayout>(R.id.vertical_layout_view_1)
         container.addView(view)
-        if (backgroundTint) view.dynamic_linear_layout_base_task.setBackgroundColor(Color.parseColor(backgroundStringLight))
-        backgroundTint = !backgroundTint
+
     }
 
     fun launchEditScreen(context: Context, task: Task): Intent {

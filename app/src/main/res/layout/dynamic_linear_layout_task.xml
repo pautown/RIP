@@ -58,8 +58,8 @@
 
             android:id="@+id/view2"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_margin="10dp"
+            android:layout_height="1dp"
+            android:layout_marginBottom="5dp"
             android:layout_weight="1"
             android:background="?android:attr/listDivider" />
 
@@ -101,13 +101,6 @@
 
         </LinearLayout>
 
-        <View
-
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_margin="10dp"
-            android:background="?android:attr/listDivider" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,6 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:text="Active/Not Active for Profiles:"
                 android:textSize="16sp"
@@ -127,9 +121,9 @@
             <View
                 android:id="@+id/divider6"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="15dp"
                 android:background="?android:attr/listDivider" />
 
             <LinearLayout
@@ -163,9 +157,10 @@
 
                 android:id="@+id/view"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
                 android:background="?android:attr/listDivider" />
 
         </LinearLayout>
