@@ -101,7 +101,6 @@ class GeneratedTaskListActivity : AppCompatActivity() {
             editor.putInt("THEME", themeInt)
             editor.commit();
         }
-
         loadTheme()
     }
 

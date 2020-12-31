@@ -1,8 +1,11 @@
 package com.town.rip
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -26,12 +29,19 @@ class CalenderActivity : AppCompatActivity() {
     private var viewAll:Boolean = false
     private val entries = ArrayList<Entry>()
 
+    private var backgroundString = "#FFFFFF"
+    private var backgroundStringLight = "#FFFFFF"
+    private var buttonBackgroundString = "#ECEBEB"
+    private var buttonTextString = "#000000"
+    private var themeInt: Int = 0
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         generatedTaskListViewModel = ViewModelProvider(this).get(GeneratedTaskListViewModel::class.java)
         setContentView(R.layout.activity_calender)
-
+        loadSharedPrefs()
         generatedTaskListViewModel.allTasks.observe(this, Observer { tasks ->
             tasks?.let { generatedTaskListViewModel.repository.allGeneratedTaskLists }
             tasksList = generatedTaskListViewModel.allTasks.value!!
@@ -39,6 +49,7 @@ class CalenderActivity : AppCompatActivity() {
             profileViewModel.allProfiles.observe(this, Observer {
                 profileList = profileViewModel.allProfiles.value!!
                 profileID = profileList.last { it.selected }.id
+                buttonProfile.text = "Activities: " + profileList.last { it.selected }.name
                 mutableProfileList.clear()
                 mutableProfileList.add("All Activities")
                 for(profile in profileList) mutableProfileList.add(profile.name)
@@ -46,6 +57,69 @@ class CalenderActivity : AppCompatActivity() {
                 loadChartView()
             })
         })
+    }
+
+    private fun loadSharedPrefs() {
+        val pref = applicationContext.getSharedPreferences("app", 0) // 0 - for private mode
+        val editor = pref.edit()
+        themeInt = pref.getInt("THEME", -1);
+        if(themeInt == null)
+        {
+            themeInt = 0
+            editor.putInt("THEME", themeInt)
+            editor.commit();
+        }
+        loadTheme()
+    }
+
+    private fun loadTheme() {
+        when (themeInt) {
+            0 // light mode
+            -> {
+                backgroundString = "#FFFFFF"
+                buttonBackgroundString = "#ECEBEB"
+                backgroundStringLight = "#F8F8F8"
+                buttonTextString = "#595959"
+
+            }
+            1 // dark mode
+            -> {
+                backgroundString = "#171717"
+                backgroundStringLight = "#222222"
+                buttonBackgroundString = "#113553"
+                buttonTextString = "#B8A542"
+
+            }
+            2 // dusk mode
+            -> {
+                backgroundString = "#7C7A7A"
+                backgroundStringLight = "#8F8E8E"
+                buttonBackgroundString = "#BCBDBD"
+                buttonTextString = "#3C3C3C"
+            }
+        }
+
+        constraintLayout.setBackgroundColor(Color.parseColor(backgroundString))
+        header.setTextColor(Color.parseColor(buttonTextString))
+
+        var arraylistButtons = java.util.ArrayList<Button>()
+        arraylistButtons.add(buttonPer)
+        arraylistButtons.add(buttonProfile)
+
+
+        for(button in arraylistButtons)
+        {
+            button.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+            button.setTextColor(Color.parseColor(buttonTextString))
+        }
+        chart.setGridBackgroundColor(Color.parseColor(backgroundString))
+        chart.xAxis.textColor = Color.parseColor(buttonTextString)
+        chart.axisLeft.textColor = Color.parseColor(buttonTextString)
+        chart.legend.textColor = Color.parseColor(buttonTextString)
+        chart.axisRight.textColor = Color.parseColor(buttonTextString)
+        chart.setNoDataTextColor(Color.parseColor(buttonTextString))
+        chart.setNoDataText("Loading history for this profile...")
+
     }
 
     fun setPer(view: View){
@@ -98,14 +172,13 @@ class CalenderActivity : AppCompatActivity() {
         entries.clear()
         var tempTasksList = tasksList
         if(!viewAll) tempTasksList = tempTasksList.filter { it.profile_id == profileID }
+        //tempTasksList = tempTasksList.filter { it.task_list_finished }
         for(task in tempTasksList)
         {
-            if(task.task_list_id == task_list_id && task != tasksList.last())
-            {
-                if(task.amount_completed > 0)
-                    cumulative_complete += (task.amount_completed/task.amount_to_complete)
-                iterationTasks++
-            }else{
+            if(task.amount_completed > 0)
+                cumulative_complete += (task.amount_completed/task.amount_to_complete)
+            iterationTasks++
+            if(task.task_list_id != task_list_id || task == tasksList.last()){
                 task_list_id = task.task_list_id
                 counter ++
                 if(counter == counterLimit || task == tempTasksList.last())
@@ -125,8 +198,12 @@ class CalenderActivity : AppCompatActivity() {
         }
         val vl = LineDataSet(entries, "Percentage Complete")
         //Part4
+        vl.setColors(Color.parseColor(buttonBackgroundString))
         vl.setDrawValues(false)
         vl.setDrawFilled(true)
+        vl.highLightColor = Color.parseColor(backgroundString)
+        vl.valueTextColor = Color.parseColor(buttonTextString)
+        vl.color = Color.parseColor(buttonBackgroundString)
 
         //Part5
         chart.xAxis.labelRotationAngle = 0f
@@ -138,15 +215,15 @@ class CalenderActivity : AppCompatActivity() {
 
         //Part7
         chart.axisRight.isEnabled = false
+
         //chart.xAxis.axisMaximum = j+0.1f
 
         //Part8
         chart.setTouchEnabled(true)
         chart.setPinchZoom(true)
-
-        //Part9
-        chart.description.text = "Days"
         chart.setNoDataText("No history for this profile yet!")
+        //Part9
+        chart.description.text = ""
 
         //Part10
         chart.animateX(1800, Easing.EaseInExpo)
