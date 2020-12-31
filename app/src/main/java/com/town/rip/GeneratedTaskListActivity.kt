@@ -3,6 +3,7 @@ package com.town.rip
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
@@ -12,14 +13,13 @@ import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.SeekBar
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.town.rip.database.*
+import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.activity_generated_task_list.*
 import kotlinx.android.synthetic.main.dynamic_generated_task.view.*
 import java.text.SimpleDateFormat
@@ -41,13 +41,22 @@ class GeneratedTaskListActivity : AppCompatActivity() {
     private var listOfGeneratedTaskViews: MutableList<View> = mutableListOf()
     private var generatedTaskCount: Int = 0
 
+    private var backgroundString = "#FFFFFF"
+    private var backgroundStringLight = "#FFFFFF"
+    private var buttonBackgroundString = "#ECEBEB"
+    private var buttonTextString = "#000000"
+    private var textHintString = "#000000"
+    private var seekbarString = "#000000"
+
+    private var themeInt: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
         generatedTaskViewModel = ViewModelProvider(this).get(GeneratedTaskListViewModel::class.java)
 
         setContentView(R.layout.activity_generated_task_list)
-
+        loadSharedPrefs()
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
         profileViewModel.allProfiles.observe(this, Observer {
@@ -82,8 +91,87 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadSharedPrefs() {
+        val pref = applicationContext.getSharedPreferences("app", 0) // 0 - for private mode
+        val editor = pref.edit()
+        themeInt = pref.getInt("THEME", -1);
+        if(themeInt == null)
+        {
+            themeInt = 0
+            editor.putInt("THEME", themeInt)
+            editor.commit();
+        }
 
-    private fun generateNewTasks() {
+        loadTheme()
+    }
+
+    private fun loadTheme() {
+        when (themeInt) {
+            0 // light mode
+            -> {
+                backgroundString = "#FFFFFF"
+                buttonBackgroundString = "#ECEBEB"
+                backgroundStringLight = "#F8F8F8"
+                buttonTextString = "#595959"
+                textHintString = "#AAAAAA"
+                seekbarString = "#0288D1"
+            }
+            1 // dark mode
+            -> {
+                backgroundString = "#171717"
+                backgroundStringLight = "#222222"
+                buttonBackgroundString = "#113553"
+                buttonTextString = "#B8A542"
+                textHintString = "#685E26"
+                seekbarString = "#0288D1"
+            }
+            2 // dusk mode
+            -> {
+                backgroundString = "#7C7A7A"
+                backgroundStringLight = "#8F8E8E"
+                buttonBackgroundString = "#BCBDBD"
+                buttonTextString = "#3C3C3C"
+                textHintString = "#4C4C4C"
+                seekbarString = "#BCBDBD"
+            }
+        }
+
+        generatedActivitiesLayout.setBackgroundColor(Color.parseColor(backgroundString))
+
+
+
+        var arraylistText = ArrayList<TextView>()
+        arraylistText.add(textView5)
+        arraylistText.add(textViewGeneratedTaskListPlaceholder)
+        arraylistText.add(textView3)
+        arraylistText.add(textView5)
+        arraylistText.add(textViewGeneratedActivitiesHUDMinutes)
+        arraylistText.add(textViewGeneratedActivitiesHUDActivities)
+        arraylistText.add(textViewGeneratedActivitiesHUDLast)
+        arraylistText.add(textViewGeneratedActivitiesHUDCompleted)
+        arraylistText.add(textViewGeneratedActivitiesHUDAvg)
+        for (textInput in arraylistText) textInput.setTextColor(Color.parseColor(buttonTextString))
+
+        var arraylistProgressBar = ArrayList<ProgressBar>()
+        arraylistProgressBar.add(progressBarGeneratedActivitiesHUDMinutes)
+        arraylistProgressBar.add(progressBarGeneratedActivitiesHUDActivities)
+        arraylistProgressBar.add(progressBarGeneratedActivitiesHUDCompleted)
+
+        for(progressBar in arraylistProgressBar)
+            progressBar.progressTintList = ColorStateList.valueOf(Color.parseColor(seekbarString))
+
+        divider2.setBackgroundColor(Color.parseColor(backgroundStringLight))
+
+        buttonGeneratedActivitiesFinish.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        buttonGeneratedActivitiesFinish.setTextColor(Color.parseColor(buttonTextString))
+
+
+
+
+    }
+
+
+        private fun generateNewTasks() {
         taskViewModel.allTasks.observe(this, Observer {
             for (task in taskViewModel.allTasks.value!!)
                 if(task.profile_ids.contains(profileID))
@@ -202,7 +290,6 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         class PutTask : AsyncTask<Void, Void, Void>(){
             override fun doInBackground(vararg params: Void?): Void? {
                 generatedTaskViewModel.insert(task)
-
                 return null
             }
         }
@@ -216,7 +303,7 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         var sinceLastHaptic = 0
         container.addView(view)
         if(task_generated.type != "t") view.textViewTimer.visibility = View.GONE
-
+        setTaskViewTheme(view)
         view.progressBarGeneratedTask.max = task_generated.amount_to_complete
         view.textViewGeneratedTaskDeskcription.text = task_generated.description
         view.textViewGeneratedTaskName.text = task_generated.name
@@ -325,8 +412,33 @@ class GeneratedTaskListActivity : AppCompatActivity() {
             }
         })
 
-        if (backgroundTint) view.linear_layout_generated_task.setBackgroundColor(Color.parseColor("#EEEEEE"))
+        
         backgroundTint = !backgroundTint
+    }
+
+    private fun setTaskViewTheme(view: View) {
+        view.seekBarGeneratedTask.thumbTintList = ColorStateList.valueOf(Color.parseColor(seekbarString))
+        view.seekBarGeneratedTask.progressTintList = ColorStateList.valueOf(Color.parseColor(seekbarString))
+        view.progressBarGeneratedTask.progressTintList = ColorStateList.valueOf(Color.parseColor(seekbarString))
+
+
+        if(backgroundTint) {
+            view.linear_layout_generated_task.setBackgroundColor(Color.parseColor(backgroundString))
+            view.divider.setBackgroundColor(Color.parseColor(backgroundStringLight))
+        }
+        else{
+            view.linear_layout_generated_task.setBackgroundColor(Color.parseColor(backgroundStringLight))
+            view.divider.setBackgroundColor(Color.parseColor(backgroundString))
+        }
+        var arraylistText = ArrayList<TextView>()
+        arraylistText.add(view.textViewGeneratedTaskName)
+        arraylistText.add(view.textViewGeneratedTaskDeskcription)
+        arraylistText.add(view.textViewGeneratedTaskProgressUnitOfMeasure)
+        arraylistText.add(view.textViewGeneratedTaskProgressText)
+        arraylistText.add(view.textViewGeneratedTaskProgressPercentage)
+        arraylistText.add(view.textViewTimer)
+        for(textView in arraylistText) textView.setTextColor(Color.parseColor(buttonTextString))
+        
     }
 
     private fun startTimer(message: String, seconds: Int) {

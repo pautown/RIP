@@ -85,6 +85,8 @@ class MainActivity : AppCompatActivity() {
         loadSharedPrefs()
     }
 
+
+
     fun setTheme(view:View){
         val pref = applicationContext.getSharedPreferences("app", 0) // 0 - for private mode
         val editor = pref.edit()
