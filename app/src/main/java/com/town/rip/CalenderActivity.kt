@@ -156,8 +156,7 @@ class CalenderActivity : AppCompatActivity() {
     private fun loadChartView() {
         // get date of first task in task list
         var task_list_id = tasksList.first().task_list_id
-        if(!viewAll && tasksList.filter{it.profile_id == profileID}.isNotEmpty())
-            tasksList.filter{it.profile_id == profileID}.first().task_list_id
+
         // loop through tasks and create percentage entry for each days tasks
         var cumulative_complete = 0
         var iterationTasks = 0
@@ -168,33 +167,40 @@ class CalenderActivity : AppCompatActivity() {
         if(perCounter == 1) counterLimit = 7
         else if(perCounter == 2) counterLimit = 31
 
-        //clear entries
         entries.clear()
         var tempTasksList = tasksList
         if(!viewAll) tempTasksList = tempTasksList.filter { it.profile_id == profileID }
-        //tempTasksList = tempTasksList.filter { it.task_list_finished }
-        for(task in tempTasksList)
-        {
-            if(task.amount_completed > 0)
-                cumulative_complete += (task.amount_completed/task.amount_to_complete)
-            iterationTasks++
-            if(task.task_list_id != task_list_id || task == tasksList.last()){
+        if(!viewAll && tempTasksList.filter{it.profile_id == profileID}.isNotEmpty())
+            task_list_id = tempTasksList.first().task_list_id
+        for(task in tempTasksList) {
+            if (task.task_list_id != task_list_id){
                 task_list_id = task.task_list_id
-                counter ++
-                if(counter == counterLimit || task == tempTasksList.last())
-                {
+                counter++
+                if (counter == counterLimit) {
                     counter = 0
-                    if(cumulative_complete > 0)
-                        cumulative_complete = (((cumulative_complete * 100.0f) / iterationTasks)).toInt()
-                    Log.d("task list i", i.toString())
-                    Log.d("task list id", task_list_id.toString())
-                    Log.d("task list cumulative", cumulative_complete.toString())
-                    entries.add(Entry(i.toFloat(),cumulative_complete.toFloat()))
+                    Log.d("Newest Task:", task.name.toString())
+                    if (cumulative_complete > 0)
+                        cumulative_complete /= iterationTasks
+                    entries.add(Entry(i.toFloat(), cumulative_complete.toFloat()))
+                    Log.d("Activities Total:", iterationTasks.toString())
+                    Log.d("Activities Percentage:", cumulative_complete.toString())
                     cumulative_complete = 0
+                    cumulative_complete += getTaskProgress(task)
                     iterationTasks = 0
                     i++
                 }
-            }
+            }else if(task == tempTasksList.last())
+            {
+                if (task.amount_completed > 0)
+                    cumulative_complete += getTaskProgress(task)
+                iterationTasks ++
+                if (cumulative_complete > 0)
+                    cumulative_complete /= iterationTasks
+                entries.add(Entry(i.toFloat(), cumulative_complete.toFloat()))
+                Log.d("Activities Total:", iterationTasks.toString())
+                Log.d("Activities Percentage:", cumulative_complete.toString())
+            }else if (task.amount_completed > 0) cumulative_complete += getTaskProgress(task)
+            iterationTasks++
         }
         val vl = LineDataSet(entries, "Percentage Complete")
         //Part4
@@ -228,6 +234,14 @@ class CalenderActivity : AppCompatActivity() {
         //Part10
         chart.animateX(1800, Easing.EaseInExpo)
 
+    }
+
+    private fun getTaskProgress(task: GeneratedTask): Int {
+        Log.d("Task Name:", task.name)
+        if(task.amount_completed !=0)
+            Log.d("Percentage completed:", ((task.amount_completed * 100.0f) / task.amount_to_complete).toInt().toString())
+        return if(task.amount_completed == 0) 0
+        else ((task.amount_completed * 100.0f) / task.amount_to_complete).toInt()
     }
 
 
