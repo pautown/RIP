@@ -210,30 +210,36 @@ class GeneratedTaskListActivity : AppCompatActivity() {
     }
 
     private fun initHUDHistorical() {
-        var generatedTaskListPriorLastID = profileGeneratedTasks.last { it.task_list_finished }.task_list_id
-        var generatedTaskListPrior = profileGeneratedTasks.filter { it.task_list_id == generatedTaskListPriorLastID }.filter {it.task_list_finished}
-        var totalTaskPercentage : Int = 0
-        var totalTasksCompletedPercentage : Int
+        if (profileGeneratedTasks.filter { it.task_list_finished }.isNotEmpty()) {
+            var generatedTaskListPriorLastID =profileGeneratedTasks.last { it.task_list_finished }.task_list_id
+            var generatedTaskListPrior = profileGeneratedTasks.filter { it.task_list_id == generatedTaskListPriorLastID }.filter {it.task_list_finished}
 
-        if(generatedTaskListPrior.isNotEmpty()) { // get average of last session for display
-            for (task in generatedTaskListPrior) {
-                totalTaskPercentage += getTaskProgress(task)
-            }
-            totalTaskPercentage =
-                ((totalTaskPercentage * 100.0f) / (generatedTaskListPrior.size * 100)).toInt()
+            var totalTaskPercentage : Int = 0
+            var totalTasksCompletedPercentage : Int
 
-            textViewGeneratedActivitiesHUDLast.text = "$totalTaskPercentage% last"
-        }else  textViewGeneratedActivitiesHUDLast.text = ""
+            if(generatedTaskListPrior.isNotEmpty()) { // get average of last session for display
+                for (task in generatedTaskListPrior) {
+                    totalTaskPercentage += getTaskProgress(task)
+                }
+                totalTaskPercentage =
+                    ((totalTaskPercentage * 100.0f) / (generatedTaskListPrior.size * 100)).toInt()
 
-        if(profileGeneratedTasks.isNotEmpty()){ // get average of all sessions for display
-            totalTaskPercentage = 0
-            for (task in profileGeneratedTasks)
-                totalTaskPercentage += getTaskProgress(task)
-            totalTaskPercentage =
-                ((totalTaskPercentage * 100.0f) / (profileGeneratedTasks.size * 100)).toInt()
+                textViewGeneratedActivitiesHUDLast.text = "$totalTaskPercentage% last"
+            }else  textViewGeneratedActivitiesHUDLast.text = ""
 
-            textViewGeneratedActivitiesHUDAvg.text = "$totalTaskPercentage% avg"
-        }else textViewGeneratedActivitiesHUDAvg.text = ""
+            if(profileGeneratedTasks.isNotEmpty()){ // get average of all sessions for display
+                totalTaskPercentage = 0
+                for (task in profileGeneratedTasks)
+                    totalTaskPercentage += getTaskProgress(task)
+                totalTaskPercentage =
+                    ((totalTaskPercentage * 100.0f) / (profileGeneratedTasks.size * 100)).toInt()
+
+                textViewGeneratedActivitiesHUDAvg.text = "$totalTaskPercentage% avg"
+            }else textViewGeneratedActivitiesHUDAvg.text = ""
+        }else{
+            textViewGeneratedActivitiesHUDAvg.text = ""
+            textViewGeneratedActivitiesHUDLast.text = ""
+        }
     }
 
     fun finishGeneratedTasks(view:View){
