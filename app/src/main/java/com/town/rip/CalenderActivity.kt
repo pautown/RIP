@@ -42,14 +42,14 @@ class CalenderActivity : AppCompatActivity() {
         generatedTaskListViewModel = ViewModelProvider(this).get(GeneratedTaskListViewModel::class.java)
         setContentView(R.layout.activity_calender)
         loadSharedPrefs()
-        generatedTaskListViewModel.allTasks.observe(this, Observer { tasks ->
-            tasks?.let { generatedTaskListViewModel.repository.allGeneratedTaskLists }
-            tasksList = generatedTaskListViewModel.allTasks.value!!
-            generatedTaskListViewModel.allTasks.removeObservers(this)
-            profileViewModel.allProfiles.observe(this, Observer {
-                profileList = profileViewModel.allProfiles.value!!
-                profileID = profileList.last { it.selected }.id
-                buttonProfile.text = "Activities: " + profileList.last { it.selected }.name
+        profileViewModel.allProfiles.observe(this, Observer {
+            profileList = profileViewModel.allProfiles.value!!
+            profileID = profileList.last { it.selected }.id
+            buttonProfile.text = "Activities: " + profileList.last { it.selected }.name
+            generatedTaskListViewModel.allTasks.observe(this, Observer { tasks ->
+                tasks?.let { generatedTaskListViewModel.repository.allGeneratedTaskLists }
+                tasksList = generatedTaskListViewModel.allTasks.value!!
+                generatedTaskListViewModel.allTasks.removeObservers(this)
                 mutableProfileList.clear()
                 mutableProfileList.add("All Activities")
                 for(profile in profileList) mutableProfileList.add(profile.name)
@@ -57,6 +57,9 @@ class CalenderActivity : AppCompatActivity() {
                 loadChartView()
             })
         })
+
+
+
     }
 
     private fun loadSharedPrefs() {
@@ -118,6 +121,7 @@ class CalenderActivity : AppCompatActivity() {
         chart.legend.textColor = Color.parseColor(buttonTextString)
         chart.axisRight.textColor = Color.parseColor(buttonTextString)
         chart.setNoDataTextColor(Color.parseColor(buttonTextString))
+
         chart.setNoDataText("Loading history for this profile...")
 
     }
@@ -209,18 +213,23 @@ class CalenderActivity : AppCompatActivity() {
         vl.setDrawFilled(true)
         vl.highLightColor = Color.parseColor(backgroundString)
         vl.valueTextColor = Color.parseColor(buttonTextString)
-        vl.color = Color.parseColor(buttonBackgroundString)
+        vl.color = Color.parseColor(buttonTextString)
+
+        vl.setColor(Color.parseColor(buttonTextString))
+        vl.setCircleColor(Color.parseColor(buttonTextString))
+        vl.setDrawValues(false)
 
         //Part5
         chart.xAxis.labelRotationAngle = 0f
 
         //Part6
-        if(entries.isNotEmpty())
+        if(!entries.isNullOrEmpty() && !entries.isNullOrEmpty())
             chart.data = LineData(vl)
-        else chart.data.clearValues()
+        else if(!entries.isNullOrEmpty()) chart.data.clearValues()
 
         //Part7
         chart.axisRight.isEnabled = false
+        vl.fillColor = Color.parseColor(buttonTextString)
 
         //chart.xAxis.axisMaximum = j+0.1f
 
