@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         else if(themeInt == 1) buttonTheme.text = "Dark Mode"
         else if(themeInt == 2) buttonTheme.text = "Dusk Mode"
         editor.putInt("THEME", themeInt)
-        editor.commit();
+        editor.commit()
         Log.v("theme_id", themeInt.toString());
         loadTheme()
         setGenerateButtonEnabled()
@@ -130,13 +130,12 @@ class MainActivity : AppCompatActivity() {
         {
             themeInt = 0
             editor.putInt("THEME", themeInt)
-            editor.commit();
+            editor.commit()
         }
         if(themeInt == 0) buttonTheme.text = "Light Mode"
         else if(themeInt == 1) buttonTheme.text = "Dark Mode"
         else if(themeInt == 2) buttonTheme.text = "Dusk Mode"
         loadTheme()
-
     }
 
     private fun loadTheme() {
