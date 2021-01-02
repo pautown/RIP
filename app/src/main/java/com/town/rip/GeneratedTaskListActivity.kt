@@ -170,12 +170,17 @@ class GeneratedTaskListActivity : AppCompatActivity() {
     }
 
 
-        private fun generateNewTasks() {
+    private fun generateNewTasks() {
         taskViewModel.allTasks.observe(this, Observer {
-            for (task in taskViewModel.allTasks.value!!)
-                if(task.profile_ids.contains(profileID))
-                    addGeneratedTaskToNewGeneratedList(task)
-            finished_generating_tasks = true
+            var generatedTasksInt = 0
+            while(generatedTasksInt == 0)
+            {
+                for (task in taskViewModel.allTasks.value!!)
+                    if(task.profile_ids.contains(profileID))
+                        generatedTasksInt += addGeneratedTaskToNewGeneratedList(task)
+                finished_generating_tasks = true
+            }
+
         })
         generatedTaskViewModel.allTasks.removeObservers(this)
 
@@ -263,14 +268,10 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         alert.show()
     }
 
-    private fun createNewGeneratedTasks(): View.OnClickListener?{
 
-        linear_layout_generated_session_init.visibility = View.GONE
-        generateNewTasks()
-        return null
-    }
 
-    private fun addGeneratedTaskToNewGeneratedList(task: Task) {
+    private fun addGeneratedTaskToNewGeneratedList(task: Task): Int  {
+        var returnInt = 0
         if((1..7).random() <= task.freq && task.enabled){
             generatedTaskCount ++
             Log.d("New Random Task", task.name.toString())
@@ -288,7 +289,9 @@ class GeneratedTaskListActivity : AppCompatActivity() {
                 profileList.filter{ it.selected }.last().id
             )
             putTask(random_task)
+            returnInt = 1
         }
+        return returnInt
     }
 
     private fun putTask(task: GeneratedTask) {

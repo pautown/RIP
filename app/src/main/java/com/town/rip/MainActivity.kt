@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                         tasksList = taskViewModel.allTasks.value!!
                         buttonGenerate.isEnabled = false
                         for (task in taskViewModel.allTasks.value!!)
-                            if (task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled) {
+                            if (task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled && task.freq > 0) {
                                 buttonGenerate.isEnabled = true
                                 setGenerateButtonText()
                                 break
