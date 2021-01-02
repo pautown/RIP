@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     private var backgroundString = "#FFFFFF"
     private var buttonBackgroundString = "#ECEBEB"
+    private var buttonBackgroundDisabledString = "#ECEBEB"
     private var buttonTextString = "#000000"
 
     private var taskViewModelGenerated = false
@@ -88,9 +89,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setGenerateButtonEnabled() {
         buttonGenerate.isEnabled = false
+        buttonGenerate.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundDisabledString))
+
         for (task in taskViewModel.allTasks.value!!)
             if (task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled && task.freq > 0) {
                 buttonGenerate.isEnabled = true
+                buttonGenerate.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
                 setGenerateButtonText()
                 break
             }
@@ -134,18 +138,21 @@ class MainActivity : AppCompatActivity() {
             -> {
                 backgroundString = "#FFFFFF"
                 buttonBackgroundString = "#ECEBEB"
+                buttonBackgroundDisabledString = "#A1A0A0"
                 buttonTextString = "#595959"
             }
             1 // dark mode
             -> {
                 backgroundString = "#171717"
                 buttonBackgroundString = "#113553"
+                buttonBackgroundDisabledString = "#33383C"
                 buttonTextString = "#B8A542"
             }
             2 // dusk mode
             -> {
                 backgroundString = "#7C7A7A"
                 buttonBackgroundString ="#BCBDBD"
+                buttonBackgroundDisabledString = "#969797"
                 buttonTextString = "#3C3C3C"
             }
         }
@@ -275,8 +282,23 @@ class MainActivity : AppCompatActivity() {
                        .setPositiveButton("Confirm",
                            DialogInterface.OnClickListener { dialog, id ->
                                profileViewModel.delete(profile)
-                               for(task in tasksList.filter { it.profile_id == profile.id })
-                                   taskViewModel.delete(task)
+
+                               for(task in tasksList) {
+                                   if (task.profile_id == profile.id)
+                                       taskViewModel.delete(task)
+                                   else if (task.profile_ids.contains(profile.id)) {
+                                       var profileIDsTemp = task.profile_ids.toMutableList()
+                                       for ((i, id) in profileIDsTemp.withIndex()) {
+                                           if (id == profile.id) {
+                                               profileIDsTemp.remove(i)
+                                               task.profile_ids = profileIDsTemp
+                                               taskViewModel.update(task)
+                                               break
+                                           }
+                                       }
+                                   }
+                               }
+
                                for(generatedTask in generatedTasksList.filter { it.profile_id == profile.id })
                                    generatedTaskListViewModel.delete(generatedTask)
                                if(profileList.none { it.selected }) {
