@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var generatedTaskListViewModel: GeneratedTaskListViewModel
 
     private lateinit var tasksList: List<Task>
+    private lateinit var generatedTasksList: List<GeneratedTask>
     private var profileList: List<Profile> = listOf()
     private var mutableProfileList: MutableList<String> = mutableListOf()
     private var profileOptions = 1
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
 
         generatedTaskListViewModel.allTasks.observe(this, Observer { tasks ->
             tasks?.let { generatedTaskListViewModel.repository.allGeneratedTaskLists }
+            generatedTasksList = generatedTaskListViewModel.allTasks.value!!
             generatedTaskListViewModelGenerated = true
             if(taskViewModelGenerated && taskViewModelGenerated && profileViewModelGenerated)
                 setGenerateButtonEnabled()
@@ -275,6 +277,8 @@ class MainActivity : AppCompatActivity() {
                                profileViewModel.delete(profile)
                                for(task in tasksList.filter { it.profile_id == profile.id })
                                    taskViewModel.delete(task)
+                               for(generatedTask in generatedTasksList.filter { it.profile_id == profile.id })
+                                   generatedTaskListViewModel.delete(generatedTask)
                                if(profileList.none { it.selected }) {
                                    profile = profileList.first()
                                    profile.selected = true
