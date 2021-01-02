@@ -174,6 +174,12 @@ class CalenderActivity : AppCompatActivity() {
         entries.clear()
         var tempTasksList = tasksList
         if(!viewAll) tempTasksList = tempTasksList.filter { it.profile_id == profileID }
+        else{
+            var profileIDList:MutableList<Int> = mutableListOf()
+            for(profile in profileList)
+                profileIDList.add(profile.id)
+            tempTasksList = tempTasksList.filter { profileIDList.contains(it.profile_id) }
+        }
         if(!viewAll && tempTasksList.filter{it.profile_id == profileID}.isNotEmpty())
             task_list_id = tempTasksList.first().task_list_id
         for(task in tempTasksList) {
@@ -193,6 +199,15 @@ class CalenderActivity : AppCompatActivity() {
 
                     iterationTasks = 0
                     i++
+                    if(task == tempTasksList.last())
+                    {
+                        iterationTasks ++
+                        if (cumulative_complete > 0)
+                            cumulative_complete /= iterationTasks
+                        entries.add(Entry(i.toFloat(), cumulative_complete.toFloat()))
+                        Log.d("Activities Total:", iterationTasks.toString())
+                        Log.d("Activities Percentage:", cumulative_complete.toString())
+                    }
                 }
             }else if(task == tempTasksList.last())
             {
