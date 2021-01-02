@@ -177,7 +177,7 @@ class CalenderActivity : AppCompatActivity() {
         if(!viewAll && tempTasksList.filter{it.profile_id == profileID}.isNotEmpty())
             task_list_id = tempTasksList.first().task_list_id
         for(task in tempTasksList) {
-            if (task.task_list_id != task_list_id){
+            if (task.task_list_id != task_list_id || task == tempTasksList.last()){
                 task_list_id = task.task_list_id
                 counter++
                 if (counter == counterLimit) {
@@ -190,8 +190,16 @@ class CalenderActivity : AppCompatActivity() {
                     Log.d("Activities Percentage:", cumulative_complete.toString())
                     cumulative_complete = 0
                     cumulative_complete += getTaskProgress(task)
+
                     iterationTasks = 0
                     i++
+                    if(task == tempTasksList.last())
+                    {
+                        iterationTasks ++
+                        if (cumulative_complete > 0)
+                            cumulative_complete /= iterationTasks
+                        entries.add(Entry(i.toFloat(), cumulative_complete.toFloat()))
+                    }
                 }
             }else if(task == tempTasksList.last())
             {
