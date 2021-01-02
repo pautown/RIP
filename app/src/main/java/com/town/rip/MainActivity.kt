@@ -91,13 +91,19 @@ class MainActivity : AppCompatActivity() {
         buttonGenerate.isEnabled = false
         buttonGenerate.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundDisabledString))
 
-        for (task in taskViewModel.allTasks.value!!)
-            if (task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled && task.freq > 0) {
-                buttonGenerate.isEnabled = true
-                buttonGenerate.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
-                setGenerateButtonText()
-                break
-            }
+        if(taskViewModelGenerated && taskViewModelGenerated && profileViewModelGenerated) {
+            for (task in taskViewModel.allTasks.value!!)
+                if ((task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled && task.freq > 0) ||
+                    (!generatedTaskListViewModel.allTasks.value.isNullOrEmpty() &&
+                             !generatedTaskListViewModel.allTasks.value!!.filter {it.profile_id == profileList.last { it.selected }.id  }.isNullOrEmpty()
+                            && !generatedTaskListViewModel.allTasks.value!!.last { it.profile_id == profileList.last { it.selected }.id }.task_list_finished)) {
+                    buttonGenerate.isEnabled = true
+                    buttonGenerate.backgroundTintList =
+                        ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+                    setGenerateButtonText()
+                    break
+                }
+        }
     }
 
 
@@ -113,6 +119,7 @@ class MainActivity : AppCompatActivity() {
         editor.commit();
         Log.v("theme_id", themeInt.toString());
         loadTheme()
+        setGenerateButtonEnabled()
     }
 
     private fun loadSharedPrefs() {
@@ -129,6 +136,7 @@ class MainActivity : AppCompatActivity() {
         else if(themeInt == 1) buttonTheme.text = "Dark Mode"
         else if(themeInt == 2) buttonTheme.text = "Dusk Mode"
         loadTheme()
+
     }
 
     private fun loadTheme() {
@@ -179,7 +187,7 @@ class MainActivity : AppCompatActivity() {
 
         buttonProfile.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
         buttonProfile.setTextColor(Color.parseColor(buttonTextString))
-
+        setGenerateButtonEnabled()
     }
 
     private fun setGenerateButtonText() {
