@@ -38,6 +38,10 @@ class MainActivity : AppCompatActivity() {
     private var buttonBackgroundString = "#ECEBEB"
     private var buttonTextString = "#000000"
 
+    private var taskViewModelGenerated = false
+    private var profileViewModelGenerated = false
+    private var generatedTaskListViewModelGenerated = false
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,46 +49,50 @@ class MainActivity : AppCompatActivity() {
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         generatedTaskListViewModel = ViewModelProvider(this).get(GeneratedTaskListViewModel::class.java)
         setContentView(R.layout.activity_main)
+
+        profileViewModel.allProfiles.observe(this, Observer {
+            profileList = profileViewModel.allProfiles.value!!
+            profileViewModelGenerated = true
+            rebuildMutableProfileList()
+            if (profileList.isNotEmpty()) {
+                if (profileList.filter { it.selected }.isEmpty()) {
+                    var profile = profileList.first()
+                    profile.selected = true
+                    profileViewModel.update(profile)
+                }
+                buttonProfile.text = "Profile: ${profileList.last { it.selected }.name}"
+            }
+            if(taskViewModelGenerated && taskViewModelGenerated && profileViewModelGenerated)
+                setGenerateButtonEnabled()
+        })
+
+        generatedTaskListViewModel.allTasks.observe(this, Observer { tasks ->
+            tasks?.let { generatedTaskListViewModel.repository.allGeneratedTaskLists }
+            generatedTaskListViewModelGenerated = true
+            if(taskViewModelGenerated && taskViewModelGenerated && profileViewModelGenerated)
+                setGenerateButtonEnabled()
+        })
+
         taskViewModel.allTasks.observe(this, Observer { tasks ->
             tasks?.let { taskViewModel.repository.allTasks }
             tasksList = taskViewModel.allTasks.value!!
-            profileViewModel.allProfiles.observe(this, Observer {
-                profileList = profileViewModel.allProfiles.value!!
-                taskViewModel.allTasks.removeObservers(this)
-                rebuildMutableProfileList()
-                if (profileList.isNotEmpty()) {
-                    if (profileList.filter { it.selected }.isEmpty()) {
-                        var profile = profileList.first()
-                        profile.selected = true
-                        profileViewModel.update(profile)
-                    }
-                    buttonGenerate.isEnabled = false
-                    for (task in taskViewModel.allTasks.value!!)
-                        if (task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled) {
-                            buttonGenerate.isEnabled = true
-                            break
-                        }
-                    buttonProfile.text = "Profile: ${profileList.last { it.selected }.name}"
-                }
-                generatedTaskListViewModel.allTasks.observe(this, Observer { tasks ->
-                    tasks?.let { generatedTaskListViewModel.repository.allGeneratedTaskLists }
-                    taskViewModel.allTasks.observe(this, Observer { tasks ->
-                        tasks?.let { taskViewModel.repository.allTasks }
-                        tasksList = taskViewModel.allTasks.value!!
-                        buttonGenerate.isEnabled = false
-                        for (task in taskViewModel.allTasks.value!!)
-                            if (task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled && task.freq > 0) {
-                                buttonGenerate.isEnabled = true
-                                setGenerateButtonText()
-                                break
-                            }
-                    })
-                })
-            })
+            taskViewModelGenerated = true
+            if(taskViewModelGenerated && taskViewModelGenerated && profileViewModelGenerated)
+                setGenerateButtonEnabled()
         })
+
         loadSharedPrefs()
     }
 
+    private fun setGenerateButtonEnabled() {
+        buttonGenerate.isEnabled = false
+        for (task in taskViewModel.allTasks.value!!)
+            if (task.profile_ids.contains(profileList.last { it.selected }.id) && task.enabled && task.freq > 0) {
+                buttonGenerate.isEnabled = true
+                setGenerateButtonText()
+                break
+            }
+    }
 
 
     fun setTheme(view:View){
