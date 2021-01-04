@@ -148,7 +148,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="2020 rip.paul.town"
+        android:text="rip.paul.town"
         android:textAlignment="textEnd"
         android:textSize="12sp"
         android:textStyle="italic"

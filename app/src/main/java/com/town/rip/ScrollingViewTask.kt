@@ -69,8 +69,6 @@ class ScrollingViewTask : AppCompatActivity() {
             mutableProfileList.add("All Activities")
             for(profile in profileList) mutableProfileList.add(profile.name)
             buttonActivities.text = "Activities: ${profileList.last { it.selected }.name}"
-
-            Log.d("profiles", profileViewModel.allProfiles.value!!.size.toString())
             profileViewModel.allProfiles.removeObservers(this)
             taskViewModel.allTasks.observe(this, Observer {
                 loadTasks()
@@ -130,7 +128,6 @@ class ScrollingViewTask : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("View activities")
         builder.setItems(mutableProfileList.toTypedArray()) { dialog, which ->
-            Log.v("profile id", which.toString());
             if(which != 0) {
                 profileID = profileList[which - 1].id
                 viewAll = false
@@ -147,7 +144,6 @@ class ScrollingViewTask : AppCompatActivity() {
     }
 
     private fun loadTasks() {
-        Log.d("LISTSIZEVM", taskViewModel.allTasks.value?.toString())
         vertical_layout_view_1.removeAllViews()
         taskViewModel.allTasks.removeObservers(this)
         if(!taskViewModel.allTasks.value.isNullOrEmpty()) {
@@ -183,7 +179,6 @@ class ScrollingViewTask : AppCompatActivity() {
                 enabledTasks = 0
                 for(task in tasksList) if (task.enabled) enabledTasks++
                 updateSubheading(tasksList.size,enabledTasks)
-                for (task in tasksList) Log.d("LISTSVM", task.name.toString())
                 updateTaskDisplays()
             }
         })

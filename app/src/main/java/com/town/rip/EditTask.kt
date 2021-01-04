@@ -101,7 +101,6 @@ class EditTask : AppCompatActivity() {
             maximum = intentExtras!!.getInt("MAX")
             freq = intentExtras!!.getInt("FREQ")
             taskIDList = intentExtras!!.getIntegerArrayList("ID_LIST")!!.toMutableList()
-            Log.d("taskIDList", taskIDList.first().toString())
 
             textInputName.setText(name)
             textInputDescription.setText(description)
@@ -387,7 +386,6 @@ class EditTask : AppCompatActivity() {
         var toast =  Toast.makeText(applicationContext, s, Toast.LENGTH_LONG)
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
         toast.show()
-        if(debugBoolean) Log.d("", s)
 
     }
 

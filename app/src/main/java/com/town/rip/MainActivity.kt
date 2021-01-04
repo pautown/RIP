@@ -117,7 +117,6 @@ class MainActivity : AppCompatActivity() {
         else if(themeInt == 2) buttonTheme.text = "Dusk Mode"
         editor.putInt("THEME", themeInt)
         editor.commit()
-        Log.v("theme_id", themeInt.toString());
         loadTheme()
         setGenerateButtonEnabled()
     }
@@ -132,9 +131,34 @@ class MainActivity : AppCompatActivity() {
             editor.putInt("THEME", themeInt)
             editor.commit()
         }
-        if(themeInt == 0) buttonTheme.text = "Light Mode"
-        else if(themeInt == 1) buttonTheme.text = "Dark Mode"
-        else if(themeInt == 2) buttonTheme.text = "Dusk Mode"
+        when (themeInt) {
+            0 -> buttonTheme.text = "Light Mode"
+            1 -> buttonTheme.text = "Dark Mode"
+            2 -> buttonTheme.text = "Dusk Mode"
+        }
+        when (themeInt) {
+            0 // light mode
+            -> {
+                backgroundString = "#FFFFFF"
+                buttonBackgroundString = "#ECEBEB"
+                buttonBackgroundDisabledString = "#A1A0A0"
+                buttonTextString = "#595959"
+            }
+            1 // dark mode
+            -> {
+                backgroundString = "#171717"
+                buttonBackgroundString = "#113553"
+                buttonBackgroundDisabledString = "#33383C"
+                buttonTextString = "#B8A542"
+            }
+            2 // dusk mode
+            -> {
+                backgroundString = "#7C7A7A"
+                buttonBackgroundString ="#BCBDBD"
+                buttonBackgroundDisabledString = "#969797"
+                buttonTextString = "#3C3C3C"
+            }
+        }
         loadTheme()
     }
 
@@ -242,7 +266,7 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Choose profile")
         builder.setItems(mutableProfileList.toTypedArray()) { dialog, which ->
-            Log.v("list id", which.toString());
+
            if(which < mutableProfileList.size - (1+profileOptions)) {
                var profile = profileList.last { it.selected }
                profile.selected = false
@@ -281,7 +305,7 @@ class MainActivity : AppCompatActivity() {
                val builder = AlertDialog.Builder(this)
                builder.setTitle("Delete profile")
                builder.setItems(mutableProfileList.toTypedArray()) { dialog, which ->
-                   Log.v("list id", which.toString());
+
                    var profile = profileList.last { it.name == mutableProfileList[which] }
                    val builder2: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
                    builder2.setMessage("This will also delete all activities created by this profile.")
@@ -341,8 +365,6 @@ class MainActivity : AppCompatActivity() {
         var toast =  Toast.makeText(applicationContext, s, Toast.LENGTH_LONG)
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
         toast.show()
-        if(debugBoolean) Log.d("", s)
-
     }
 
     fun viewCalender(view: View) {

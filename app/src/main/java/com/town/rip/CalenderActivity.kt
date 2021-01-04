@@ -141,7 +141,6 @@ class CalenderActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("View activities")
         builder.setItems(mutableProfileList.toTypedArray()) { dialog, which ->
-            Log.v("profile id", which.toString());
             if(which != 0) {
                 profileID = profileList[which - 1].id
                 viewAll = false
@@ -189,12 +188,11 @@ class CalenderActivity : AppCompatActivity() {
                     counter++
                     if (counter == counterLimit) {
                         counter = 0
-                        Log.d("Newest Task:", task.name.toString())
+
                         if (cumulative_complete > 0)
                             cumulative_complete /= iterationTasks
                         entries.add(Entry(i.toFloat(), cumulative_complete.toFloat()))
-                        Log.d("Activities Total:", iterationTasks.toString())
-                        Log.d("Activities Percentage:", cumulative_complete.toString())
+
                         cumulative_complete = 0
                         cumulative_complete += getTaskProgress(task)
 
@@ -205,8 +203,7 @@ class CalenderActivity : AppCompatActivity() {
                             if (cumulative_complete > 0)
                                 cumulative_complete /= iterationTasks
                             entries.add(Entry(i.toFloat(), cumulative_complete.toFloat()))
-                            Log.d("Activities Total:", iterationTasks.toString())
-                            Log.d("Activities Percentage:", cumulative_complete.toString())
+
                         }
                     }
                 } else if (task == tempTasksList.last()) {
@@ -216,8 +213,6 @@ class CalenderActivity : AppCompatActivity() {
                     if (cumulative_complete > 0)
                         cumulative_complete /= iterationTasks
                     entries.add(Entry(i.toFloat(), cumulative_complete.toFloat()))
-                    Log.d("Activities Total:", iterationTasks.toString())
-                    Log.d("Activities Percentage:", cumulative_complete.toString())
                 } else if (task.amount_completed > 0) cumulative_complete += getTaskProgress(task)
                 iterationTasks++
             }
@@ -264,9 +259,6 @@ class CalenderActivity : AppCompatActivity() {
     }
 
     private fun getTaskProgress(task: GeneratedTask): Int {
-        Log.d("Task Name:", task.name)
-        if(task.amount_completed !=0)
-            Log.d("Percentage completed:", ((task.amount_completed * 100.0f) / task.amount_to_complete).toInt().toString())
         return if(task.amount_completed == 0) 0
         else ((task.amount_completed * 100.0f) / task.amount_to_complete).toInt()
     }

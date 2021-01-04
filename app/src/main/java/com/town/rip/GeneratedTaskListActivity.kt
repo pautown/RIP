@@ -78,7 +78,6 @@ class GeneratedTaskListActivity : AppCompatActivity() {
                     generateNewTasks()
                     else
                     continueGeneratedTasks()
-                Log.d("task list id", session_task_list_id.toString())
             })
         })
 
@@ -274,7 +273,6 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         var returnInt = 0
         if((1..7).random() <= task.freq && task.enabled){
             generatedTaskCount ++
-            Log.d("New Random Task", task.name.toString())
             var random_task = GeneratedTask(
                 task.name,
                 task.description,
