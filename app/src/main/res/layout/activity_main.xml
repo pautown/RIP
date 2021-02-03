@@ -139,6 +139,12 @@
                 android:onClick="setProfile"
                 android:text="Profile: default" />
 
+            <Button
+                android:id="@+id/buttonSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Global Settings" />
+
         </LinearLayout>
 
     </LinearLayout>

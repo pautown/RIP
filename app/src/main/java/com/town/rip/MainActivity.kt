@@ -210,6 +210,10 @@ class MainActivity : AppCompatActivity() {
 
         buttonProfile.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
         buttonProfile.setTextColor(Color.parseColor(buttonTextString))
+
+        buttonSettings.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        buttonSettings.setTextColor(Color.parseColor(buttonTextString))
+
         setGenerateButtonEnabled()
     }
 
