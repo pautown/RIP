@@ -385,6 +385,13 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun viewSettings(view: View) {
+        val intent = Intent(this, SettingsActivity::class.java).apply {
+            // putExtras(extras)
+        }
+        startActivity(intent)
+    }
+
     fun generateTasks(view: View) {
         val intent = Intent(this, GeneratedTaskListActivity::class.java)
         startActivity(intent)

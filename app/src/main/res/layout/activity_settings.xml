@@ -229,12 +229,11 @@
                     android:textColor="#000000" />
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName"
+                    android:id="@+id/editTextNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:inputType="textPersonName"
-                    android:text="15" />
+                    android:inputType="number"
+                    android:text="10" />
 
                 <TextView
                     android:id="@+id/textView16"
@@ -245,10 +244,10 @@
                     android:textColor="#020202" />
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName2"
+                    android:id="@+id/editTextNumber2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
+                    android:inputType="number"
                     android:text="5" />
 
             </LinearLayout>
@@ -272,6 +271,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#EFEEEE"
+                android:onClick="returnToMenu"
                 android:text="Back"
                 android:textColor="@android:color/tertiary_text_dark" />
         </LinearLayout>
