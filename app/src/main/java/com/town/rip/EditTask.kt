@@ -33,6 +33,8 @@ import java.util.*
 
 
 class EditTask : AppCompatActivity() {
+    private var globalVibration: Boolean = true
+
     private lateinit var taskIDList: MutableList<Int>
     private lateinit var taskViewModel: TaskViewModel
     private lateinit var profileViewModel: ProfileViewModel
@@ -124,7 +126,7 @@ class EditTask : AppCompatActivity() {
                progress: Int, fromUser: Boolean
            ) {
                textViewDaysPerWeek.text = seekBar.progress.toString()
-               seekBar.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+               if(globalVibration) seekBar.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
            }
 
            override fun onStartTrackingTouch(seek: SeekBar) {
@@ -143,6 +145,13 @@ class EditTask : AppCompatActivity() {
         val pref = applicationContext.getSharedPreferences("app", 0) // 0 - for private mode
         val editor = pref.edit()
         themeInt = pref.getInt("THEME", -1);
+        globalVibration = pref.getBoolean("VIBRATION", true)
+        if(globalVibration == null)
+        {
+            globalVibration = true
+            editor.putBoolean("VIBRATION", globalVibration)
+            editor.commit();
+        }
         if(themeInt == null)
         {
             themeInt = 0
@@ -183,7 +192,6 @@ class EditTask : AppCompatActivity() {
         }
 
         editActivityLinearLayout.setBackgroundColor(Color.parseColor(backgroundString))
-
         var arraylistEditText = ArrayList<EditText>()
         arraylistEditText.add(textInputDescription)
         arraylistEditText.add(textInputName)
@@ -241,9 +249,6 @@ class EditTask : AppCompatActivity() {
             button.setTextColor(Color.parseColor(buttonTextString))
             button.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
         }
-
-
-
     }
 
     private fun setCursorColor(view: EditText, @ColorInt color: Int) {
