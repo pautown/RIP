@@ -5,11 +5,19 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.View
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.constraintLayout
 import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
 import kotlinx.android.synthetic.main.activity_settings.*
+import kotlinx.android.synthetic.main.dynamic_view_profile.view.*
+import java.util.ArrayList
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -53,7 +61,9 @@ class SettingsActivity : AppCompatActivity() {
             vibrationBool = !vibrationBool
             vibrationCheckbox.isChecked = vibrationBool
             editor.putBoolean("VIBRATION", vibrationBool)
-            editor.commit();
+            editor.commit()
+            if(vibrationBool) linearLayoutVibration.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+
         }
 
         loadTheme()
@@ -83,14 +93,46 @@ class SettingsActivity : AppCompatActivity() {
                 buttonTextString = "#3C3C3C"
             }
         }
-        //constraintLayout.setBackgroundColor(Color.parseColor(backgroundString))
 
-        //textView5.setTextColor(Color.parseColor(buttonTextString))
-       // textViewSubheading.setTextColor(Color.parseColor(buttonTextString))
-       // textViewViewTextsLoadingMessage.setTextColor(Color.parseColor(buttonTextString))
+        backgroundLayout.setBackgroundColor(Color.parseColor(backgroundString))
 
-       // buttonActivities.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
-       // buttonActivities.setTextColor(Color.parseColor(buttonTextString))
+
+        var arraylistText = ArrayList<TextView>()
+        arraylistText.add(textViewHeader)
+        arraylistText.add(textViewVibration)
+        arraylistText.add(textViewPush)
+        arraylistText.add(textViewEitherOr)
+        arraylistText.add(textViewProgressPrompt)
+        arraylistText.add(textViewRoundActivities)
+        arraylistText.add(textViewAbove)
+        arraylistText.add(textViewBy)
+        arraylistText.add(textViewRoundInputAbove)
+        arraylistText.add(textViewRoundInputBy)
+
+        var arraylistCheckbox = ArrayList<CheckBox>()
+        arraylistCheckbox.add(vibrationCheckbox)
+        arraylistCheckbox.add(pushCheckbox)
+        arraylistCheckbox.add(eitherOrCheckbox)
+        arraylistCheckbox.add(progressPromptCheckbox)
+        arraylistCheckbox.add(roundGeneratedCheckbox)
+
+        for(textInput in arraylistText)
+        {
+            textInput.setTextColor(Color.parseColor(buttonTextString))
+            textInput.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonTextString))
+        }
+
+        for(checkBox in arraylistCheckbox)
+        {
+            checkBox.buttonTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        }
+
+
+
+
+        buttonBack.setTextColor(Color.parseColor(buttonTextString))
+        buttonBack.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+
     }
 
 
