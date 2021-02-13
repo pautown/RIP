@@ -81,6 +81,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/linearLayoutPush"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -99,7 +100,9 @@
                 <CheckBox
                     android:id="@+id/pushCheckbox"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:duplicateParentState="true" />
             </LinearLayout>
         </LinearLayout>
 
@@ -115,6 +118,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/linearLayoutEitherOr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -134,7 +138,9 @@
                     android:id="@+id/eitherOrCheckbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true" />
+                    android:checked="true"
+                    android:clickable="false"
+                    android:duplicateParentState="true" />
             </LinearLayout>
         </LinearLayout>
 
@@ -150,6 +156,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/linearLayoutSocial"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -168,7 +175,9 @@
                 <CheckBox
                     android:id="@+id/progressPromptCheckbox"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:duplicateParentState="true" />
             </LinearLayout>
         </LinearLayout>
 
@@ -184,6 +193,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/linearLayoutRound"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -212,6 +222,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
+                        android:clickable="false"
+                        android:duplicateParentState="true"
                         android:foregroundGravity="center|right" />
                 </LinearLayout>
 

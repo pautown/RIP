@@ -28,6 +28,10 @@ class SettingsActivity : AppCompatActivity() {
     private var themeInt: Int = 0
 
     private var vibrationBool:Boolean = true
+    private var pushBool:Boolean = true
+    private var eitherOrBool:Boolean = true
+    private var socialMediaPromptBool:Boolean = true
+    private var roundGeneratedBool:Boolean = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +46,10 @@ class SettingsActivity : AppCompatActivity() {
         val editor = pref.edit()
         themeInt = pref.getInt("THEME", -1);
         vibrationBool = pref.getBoolean("VIBRATION", true)
+        pushBool = pref.getBoolean("PUSH", false)
+        eitherOrBool = pref.getBoolean("EITHEROR", false)
+        socialMediaPromptBool = pref.getBoolean("SOCIALMEDIAPROMPT", false)
+        roundGeneratedBool = pref.getBoolean("ROUNDGENERATED", false)
 
         if(themeInt == null)
         {
@@ -49,13 +57,39 @@ class SettingsActivity : AppCompatActivity() {
             editor.putInt("THEME", themeInt)
             editor.commit();
         }
-
         if(vibrationBool == null)
         {
             vibrationBool = true
             editor.putBoolean("VIBRATION", vibrationBool)
             editor.commit();
         }
+        if(pushBool == null)
+        {
+            pushBool = false
+            editor.putBoolean("PUSH", pushBool)
+            editor.commit();
+        }
+        if(eitherOrBool == null)
+        {
+            eitherOrBool = false
+            editor.putBoolean("EITHEROR", eitherOrBool)
+            editor.commit();
+        }
+        if(socialMediaPromptBool == null)
+        {
+            socialMediaPromptBool = false
+            editor.putBoolean("SOCIALMEDIAPROMPT", socialMediaPromptBool)
+            editor.commit();
+        }
+        if(roundGeneratedBool == null)
+        {
+            roundGeneratedBool = false
+            editor.putBoolean("ROUNDGENERATED", roundGeneratedBool)
+            editor.commit();
+        }
+
+
+
         vibrationCheckbox.isChecked = vibrationBool
         linearLayoutVibration.setOnClickListener{
             vibrationBool = !vibrationBool
@@ -63,6 +97,45 @@ class SettingsActivity : AppCompatActivity() {
             editor.putBoolean("VIBRATION", vibrationBool)
             editor.commit()
             if(vibrationBool) linearLayoutVibration.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+        }
+
+        pushCheckbox.isChecked = pushBool
+        linearLayoutPush.setOnClickListener{
+            pushBool = !pushBool
+            pushCheckbox.isChecked = pushBool
+            editor.putBoolean("PUSH", pushBool)
+            editor.commit()
+            if(vibrationBool && pushBool) linearLayoutVibration.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+
+        }
+
+        eitherOrCheckbox.isChecked = eitherOrBool
+        linearLayoutEitherOr.setOnClickListener{
+            eitherOrBool = !eitherOrBool
+            eitherOrCheckbox.isChecked = eitherOrBool
+            editor.putBoolean("EITHEROR", eitherOrBool)
+            editor.commit()
+            if(vibrationBool && eitherOrBool) linearLayoutVibration.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+
+        }
+
+        progressPromptCheckbox.isChecked = socialMediaPromptBool
+        linearLayoutSocial.setOnClickListener{
+            socialMediaPromptBool = !socialMediaPromptBool
+            progressPromptCheckbox.isChecked = socialMediaPromptBool
+            editor.putBoolean("SOCIALMEDIAPROMPT", socialMediaPromptBool)
+            editor.commit()
+            if(vibrationBool && socialMediaPromptBool) linearLayoutVibration.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+
+        }
+
+        roundGeneratedCheckbox.isChecked = roundGeneratedBool
+        linearLayoutRound.setOnClickListener{
+            roundGeneratedBool = !roundGeneratedBool
+            roundGeneratedCheckbox.isChecked = roundGeneratedBool
+            editor.putBoolean("ROUNDGENERATED", roundGeneratedBool)
+            editor.commit()
+            if(vibrationBool && roundGeneratedBool) linearLayoutVibration.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
 
         }
 
