@@ -42,6 +42,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/linearLayoutVibration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -58,10 +59,12 @@
                     android:textSize="18sp" />
 
                 <CheckBox
-                    android:id="@+id/checkBox4"
+                    android:id="@+id/vibrationCheckbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true" />
+                    android:checked="true"
+                    android:clickable="false"
+                    android:duplicateParentState="true" />
             </LinearLayout>
         </LinearLayout>
 
