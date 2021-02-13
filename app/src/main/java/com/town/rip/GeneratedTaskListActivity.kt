@@ -27,6 +27,7 @@ import java.util.*
 
 
 class GeneratedTaskListActivity : AppCompatActivity() {
+    private var globalVibration: Boolean = true
     private var profileID: Int = 0
     private var profileGeneratedTasks: List<GeneratedTask> = listOf()
     private var finished_generating_tasks: Boolean = false
@@ -94,6 +95,13 @@ class GeneratedTaskListActivity : AppCompatActivity() {
         val pref = applicationContext.getSharedPreferences("app", 0) // 0 - for private mode
         val editor = pref.edit()
         themeInt = pref.getInt("THEME", -1);
+        globalVibration = pref.getBoolean("VIBRATION", true)
+        if(globalVibration == null)
+        {
+            globalVibration = true
+            editor.putBoolean("VIBRATION", globalVibration)
+            editor.commit();
+        }
         if(themeInt == null)
         {
             themeInt = 0
@@ -398,7 +406,7 @@ class GeneratedTaskListActivity : AppCompatActivity() {
                     sinceLastHaptic = view.seekBarGeneratedTask.progress
                 }
                 if(view.seekBarGeneratedTask.progress <= sinceLastHaptic - view.seekBarGeneratedTask.max/7) sinceLastHaptic = view.seekBarGeneratedTask.progress
-                if (performHapticBool) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                if (performHapticBool && globalVibration) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
 
                 task_generated.amount_completed = view.seekBarGeneratedTask.progress
                 view.textViewGeneratedTaskProgressText.text = task_generated.amount_completed.toString() + "/" + task_generated.amount_to_complete.toString()
