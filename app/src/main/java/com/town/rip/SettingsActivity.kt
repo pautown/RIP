@@ -1,23 +1,22 @@
 package com.town.rip
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.HapticFeedbackConstants
 import android.view.View
-import android.widget.Button
 import android.widget.CheckBox
-import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.constraintLayout
 import kotlinx.android.synthetic.main.activity_scrolling_view_tasks.*
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.dynamic_view_profile.view.*
-import java.util.ArrayList
+import java.util.*
+
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -44,12 +43,21 @@ class SettingsActivity : AppCompatActivity() {
     private fun loadSharedPrefs() {
         val pref = applicationContext.getSharedPreferences("app", 0) // 0 - for private mode
         val editor = pref.edit()
+        var roundAmount = 0
         themeInt = pref.getInt("THEME", -1);
         vibrationBool = pref.getBoolean("VIBRATION", true)
         pushBool = pref.getBoolean("PUSH", false)
         eitherOrBool = pref.getBoolean("EITHEROR", false)
         socialMediaPromptBool = pref.getBoolean("SOCIALMEDIAPROMPT", false)
         roundGeneratedBool = pref.getBoolean("ROUNDGENERATED", false)
+        roundAmount = pref.getInt("ROUNDAMOUNT", 5)
+
+        if(roundAmount == null)
+        {
+            roundAmount = 5
+            editor.putInt("ROUNDAMOUNT", roundAmount)
+            editor.commit();
+        }
 
         if(themeInt == null)
         {
@@ -90,6 +98,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
 
+
         vibrationCheckbox.isChecked = vibrationBool
         linearLayoutVibration.setOnClickListener{
             vibrationBool = !vibrationBool
@@ -105,7 +114,9 @@ class SettingsActivity : AppCompatActivity() {
             pushCheckbox.isChecked = pushBool
             editor.putBoolean("PUSH", pushBool)
             editor.commit()
-            if(vibrationBool && pushBool) linearLayoutVibration.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            if(vibrationBool && pushBool) linearLayoutVibration.performHapticFeedback(
+                HapticFeedbackConstants.KEYBOARD_TAP
+            )
 
         }
 
@@ -115,7 +126,9 @@ class SettingsActivity : AppCompatActivity() {
             eitherOrCheckbox.isChecked = eitherOrBool
             editor.putBoolean("EITHEROR", eitherOrBool)
             editor.commit()
-            if(vibrationBool && eitherOrBool) linearLayoutVibration.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            if(vibrationBool && eitherOrBool) linearLayoutVibration.performHapticFeedback(
+                HapticFeedbackConstants.KEYBOARD_TAP
+            )
 
         }
 
@@ -125,7 +138,9 @@ class SettingsActivity : AppCompatActivity() {
             progressPromptCheckbox.isChecked = socialMediaPromptBool
             editor.putBoolean("SOCIALMEDIAPROMPT", socialMediaPromptBool)
             editor.commit()
-            if(vibrationBool && socialMediaPromptBool) linearLayoutVibration.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            if(vibrationBool && socialMediaPromptBool) linearLayoutVibration.performHapticFeedback(
+                HapticFeedbackConstants.KEYBOARD_TAP
+            )
 
         }
 
@@ -135,9 +150,33 @@ class SettingsActivity : AppCompatActivity() {
             roundGeneratedCheckbox.isChecked = roundGeneratedBool
             editor.putBoolean("ROUNDGENERATED", roundGeneratedBool)
             editor.commit()
-            if(vibrationBool && roundGeneratedBool) linearLayoutVibration.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-
+            if(vibrationBool && roundGeneratedBool) linearLayoutVibration.performHapticFeedback(
+                HapticFeedbackConstants.KEYBOARD_TAP
+            )
         }
+
+
+        textViewRoundInput.setText(roundAmount.toString())
+        textViewRoundInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int,
+                count: Int, after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                s: CharSequence, start: Int,
+                before: Int, count: Int
+            ) {
+                if (s.isNotEmpty()) {
+                    editor.putInt("ROUNDAMOUNT", textViewRoundInput.text.toString().toInt())
+                    editor.commit()
+                }
+            }
+        })
+
+
 
         loadTheme()
     }
@@ -162,7 +201,7 @@ class SettingsActivity : AppCompatActivity() {
             -> {
                 backgroundString = "#7C7A7A"
                 backgroundStringLight = "#8F8E8E"
-                buttonBackgroundString ="#BCBDBD"
+                buttonBackgroundString = "#BCBDBD"
                 buttonTextString = "#3C3C3C"
             }
         }
@@ -178,9 +217,7 @@ class SettingsActivity : AppCompatActivity() {
         arraylistText.add(textViewProgressPrompt)
         arraylistText.add(textViewRoundActivities)
         arraylistText.add(textViewAbove)
-        arraylistText.add(textViewBy)
-        arraylistText.add(textViewRoundInputAbove)
-        arraylistText.add(textViewRoundInputBy)
+        arraylistText.add(textViewRoundInput)
 
         var arraylistCheckbox = ArrayList<CheckBox>()
         arraylistCheckbox.add(vibrationCheckbox)
@@ -203,8 +240,13 @@ class SettingsActivity : AppCompatActivity() {
 
 
 
+
         buttonBack.setTextColor(Color.parseColor(buttonTextString))
-        buttonBack.backgroundTintList = ColorStateList.valueOf(Color.parseColor(buttonBackgroundString))
+        buttonBack.backgroundTintList = ColorStateList.valueOf(
+            Color.parseColor(
+                buttonBackgroundString
+            )
+        )
 
     }
 
